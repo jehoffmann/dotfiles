@@ -1,0 +1,22 @@
+# OS generated
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+.Thumbs.db
+
+# eclipse stuff
+.cproject
+.project
+.settings
+.jupite
+.autotools
+
+# indices
+.tags*
+tags
+TAGS
+cscope.*
+
+# ignored apps
+repo

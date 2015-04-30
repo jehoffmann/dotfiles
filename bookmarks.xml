@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bookmarks>
+   <site url="http://avr-eclipse.sourceforge.net/updatesite" selected="false" name="AVR Eclipse Generate Update Site"/>
+   <site url="http://download.eclipse.org/tools/cdt/releases/kepler" selected="false" name="CDT"/>
+   <site url="http://erlide.org/update" selected="true" name="Erlide Test Site"/>
+   <site url="http://dist.springsource.org/release/GRECLIPSE/e4.3/" selected="true" name="Groovy-Eclipse update site"/>
+   <site url="http://download.eclipse.org/releases/kepler" selected="true" name="Kepler"/>
+   <site url="http://pydev.org/updates" selected="true" name="PyDev Update Site"/>
+   <site url="http://viplugin.com" selected="true" name="update site: http://viplugin.com"/>
+   <site url="https://dl-ssl.google.com/android/eclipse/" selected="true" name="update site: https://dl-ssl.google.com/android/eclipse/"/>
+</bookmarks>
