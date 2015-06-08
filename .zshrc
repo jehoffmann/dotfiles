@@ -114,8 +114,8 @@ if [[ $platform == "darwin" ]]; then
         export ANDROID_HOME=${ANDROID_SDK_HOME}
     fi
 
-    if [[ -d ${HOME}/Development/sdk/android-ndk-r10d ]]; then
-        export ANDROID_NDK_HOME=${HOME}/Development/sdk/android-ndk-r10d
+    if [[ -d ${HOME}/Development/sdk/android-ndk-r10e ]]; then
+        export ANDROID_NDK_HOME=${HOME}/Development/sdk/android-ndk-r10e
         export PATH=${ANDROID_NDK_HOME}:${PATH}
     fi
 
