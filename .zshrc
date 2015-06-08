@@ -42,16 +42,15 @@ antigen bundle docker
 antigen bundle sudo
 antigen bundle python
 antigen bundle vundle
-antigen bundle virtualenv
-antigen bundle virtualenvwrapper
+
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 # Fortunes
-T2C_FORTUNE_DIR=${HOME}/.t2c_fortunes
-T2C_FORTUNE_URL=ssh://git@bitbucket.org/Satarus/t2c_fortunes.git
-antigen bundle ssh://git@bitbucket.org/Satarus/t2c_fortunes.git contrib/t2c_fortunes --branch=next
+#T2C_FORTUNE_DIR=${HOME}/.t2c_fortunes
+#T2C_FORTUNE_URL=ssh://git@bitbucket.org/Satarus/t2c_fortunes.git
+#antigen bundle ssh://git@bitbucket.org/Satarus/t2c_fortunes.git contrib/t2c_fortunes --branch=next
 
 if [[ $platform == 'darwin' ]]; then
     antigen bundle osx
@@ -62,6 +61,18 @@ if [[ $platform == 'darwin' ]]; then
     antigen bundle xcode
     antigen bundle vagrant
 fi
+
+# Python config
+# pip should only run if there is a virtualenv currently activated
+export PIP_REQUIRE_VIRTUALENV=true
+# cache pip-installed packages to avoid re-downloading
+export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+export DISABLE_VENV_CD=1
+
+antigen bundle virtualenv
+antigen bundle virtualenvwrapper
 
 # Load the theme.
 antigen theme gallifrey
