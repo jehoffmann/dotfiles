@@ -41,6 +41,7 @@ antigen bundle history
 antigen bundle docker
 antigen bundle sudo
 antigen bundle python
+antigen bundle pip
 antigen bundle vundle
 
 
@@ -63,13 +64,11 @@ if [[ $platform == 'darwin' ]]; then
 fi
 
 # Python config
-# pip should only run if there is a virtualenv currently activated
-export PIP_REQUIRE_VIRTUALENV=true
+export PIP_RESPECT_VIRTUALENV=true
 # cache pip-installed packages to avoid re-downloading
-export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-export DISABLE_VENV_CD=1
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 antigen bundle virtualenv
 antigen bundle virtualenvwrapper
