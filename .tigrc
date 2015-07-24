@@ -1,12 +1,8 @@
-set author-width = 15
-set show-author = yes
 # set show-date = relative
-set show-refs = yes
-set show-rev-graph = yes
 set line-graphics = yes
 
 # keybindings
 bind generic F !git fetch
 bind generic P !git push
 bind generic c !git checkout %(commit)
-#bind generic p !%(commit) | pbcopy
+bind generic p !%(commit) | pbcopy

@@ -11,7 +11,10 @@ esac
 
 host=$(hostname -s)
 
-export TERM="xterm-256color"
+### Path ###
+if [[ -d "$HOME/bin" ]]; then
+	export PATH=$HOME/bin:$PATH
+fi
 
 ANTIGEN_HOME=$HOME/.antigen
 [ -f $ANTIGEN_HOME/antigen.zsh ] || git clone\
@@ -40,13 +43,18 @@ antigen bundle common-aliases
 antigen bundle history
 antigen bundle docker
 antigen bundle sudo
-antigen bundle python
-antigen bundle pip
 antigen bundle vundle
 
+antigen bundle python
+antigen bundle pip
+
+antigen bundle ruby
+antigen bundle rbenv
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
+
+antigen bundle chrissicool/zsh-256color
 
 # Fortunes
 #T2C_FORTUNE_DIR=${HOME}/.t2c_fortunes
@@ -78,17 +86,6 @@ antigen theme gallifrey
 
 # Tell antigen that you're done.
 antigen apply
-
-export EMAIL="jehoffma@gmail.com"
-export GIT_COMMITTER_NAME="Jens Hoffmann"
-export GIT_COMMITTER_EMAIL="$EMAIL"
-export GIT_AUTHOR_NAME="$GIT_COMMITTER_NAME"
-export GIT_AUTHOR_EMAIL="$EMAIL"
-
-### Path ###
-if [[ -d "$HOME/bin" ]]; then
-	export PATH=$HOME/bin:$PATH
-fi
 
 if [[ $platform == "darwin" ]]; then
 
@@ -147,3 +144,5 @@ fi
 
 alias tmux="tmux -2"
 
+
+alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"

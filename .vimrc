@@ -43,7 +43,6 @@ highlight clear SignColumn
 " Python
 Plugin 'python.vim'
 Plugin 'pythoncomplete'
-Plugin 'jmcantrell/vim-virtualenv'
 
 " Groovy
 Plugin 'groovy.vim'

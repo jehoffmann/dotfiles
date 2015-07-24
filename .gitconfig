@@ -1,7 +1,7 @@
 # User information. Replace with your own data, obviously.
 [user]
 	name = Jens Hoffmann
-#	email = jens.hoffmann@trust2core.de
+	email = jehoffma@gmail.com
 [branch]
 	autosetupmerge = true
 	autosetuprebase = always
