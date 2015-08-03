@@ -56,6 +56,9 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen bundle chrissicool/zsh-256color
 
+antigen bundle Tarrasch/zsh-autoenv
+#antigen bundle kennethreitz/autoenv
+
 # Fortunes
 #T2C_FORTUNE_DIR=${HOME}/.t2c_fortunes
 #T2C_FORTUNE_URL=ssh://git@bitbucket.org/Satarus/t2c_fortunes.git
