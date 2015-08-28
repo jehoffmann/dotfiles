@@ -92,6 +92,10 @@ antigen apply
 
 if [[ $platform == "darwin" ]]; then
 
+    if [[ -z $(which brew) ]]; then
+        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
+
     # Vagrant configuration
     export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
     #export VAGRANT_HOME=${HOME}/.vagrant.d
@@ -146,6 +150,4 @@ if [[ -n "${ANDROID_SDK_HOME}" ]]; then
 fi
 
 alias tmux="tmux -2"
-
-
 alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"
