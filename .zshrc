@@ -78,7 +78,7 @@ fi
 export PIP_RESPECT_VIRTUALENV=true
 # cache pip-installed packages to avoid re-downloading
 export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 antigen bundle virtualenv
