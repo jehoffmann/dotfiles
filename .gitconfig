@@ -68,3 +68,5 @@
 [mergetool "cp"]
 	cmd = /bin/cp -v \"$REMOTE\" \"$MERGED\"
 	trustExitCode = true
+[rerere]
+	enabled = true
