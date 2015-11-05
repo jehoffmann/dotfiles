@@ -96,11 +96,6 @@ if [[ $platform == "darwin" ]]; then
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 
-    # Vagrant configuration
-    export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
-    #export VAGRANT_HOME=${HOME}/.vagrant.d
-    #export VAGRANT_DOTFILE_PATH=${HOME}/.vagrant
-    export VAGRANT_VMWARE_CLONE_DIRECTORY=${HOME}/.vagrant.d/vm
     export DOCKER_HOST='tcp://127.0.0.1:2375' 
 
     # change path and set homebrew bin in front of path
