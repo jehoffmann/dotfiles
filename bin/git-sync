@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+dirs -c
+for d in *.git; do
+    pushd $d
+    git fetch --all
+    popd
+done
