@@ -16,6 +16,9 @@ if [[ -d "$HOME/bin" ]]; then
 	export PATH=$HOME/bin:$PATH
 fi
 
+[ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
+[ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
+
 ANTIGEN_HOME=$HOME/.antigen
 [ -f $ANTIGEN_HOME/antigen.zsh ] || git clone\
       https://github.com/zsh-users/antigen.git $ANTIGEN_HOME
