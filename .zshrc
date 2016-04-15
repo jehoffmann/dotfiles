@@ -121,7 +121,7 @@ if [[ $platform == "darwin" ]]; then
 
 elif [[ $platform == "linux" ]]; then
     
-    export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+    export JAVA_HOME=/usr/lib/jvm/default-java
     export ANT_HOME=/usr/share/ant
     export GROOVY_HOME=/usr/share/groovy
     export GRADLE_HOME=/usr/share/gradle
