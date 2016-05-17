@@ -111,8 +111,6 @@ if [[ $platform == "darwin" ]]; then
 
     if [[ -d ${HOME}/Development/sdk/android-sdk-macosx ]]; then
         export ANDROID_SDK_HOME=${HOME}/Development/sdk/android-sdk-macosx
-        export ANDROID_AVD_HOME=${HOME}/.android/avd
-        export ANDROID_HOME=${ANDROID_SDK_HOME}
     fi
 
     if [[ -d "/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin" ]]; then
@@ -128,8 +126,6 @@ elif [[ $platform == "linux" ]]; then
 
     if [[ -d ${HOME}/Development/sdk/android-sdk-linux ]]; then
         export ANDROID_SDK_HOME=${HOME}/Development/sdk/android-sdk-linux
-        export ANDROID_AVD_HOME=${HOME}/.android/avd
-        export ANDROID_HOME=${ANDROID_SDK_HOME}
     fi
 fi
 
@@ -140,6 +136,9 @@ if [[ -n "${ANDROID_SDK_HOME}" ]]; then
         export ANDROID_NDK_HOME=${ANDROID_SDK_HOME}/ndk-bundle
         export PATH=${ANDROID_NDK_HOME}:${PATH}
     fi
+
+    export ANDROID_AVD_HOME=${HOME}/.android/avd
+    export ANDROID_HOME=${ANDROID_SDK_HOME}
 fi
 
 alias tmux="tmux -2"
