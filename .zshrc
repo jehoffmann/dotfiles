@@ -110,7 +110,7 @@ if [[ $platform == "darwin" ]]; then
     export GRADLE_HOME=/usr/local/opt/gradle/libexec
 
     if [[ -d ${HOME}/Development/sdk/android-sdk-macosx ]]; then
-        export ANDROID_SDK_HOME=${HOME}/Development/sdk/android-sdk-macosx
+        export ANDROID_HOME=${HOME}/Development/sdk/android-sdk-macosx
     fi
 
     if [[ -d "/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin" ]]; then
@@ -125,20 +125,16 @@ elif [[ $platform == "linux" ]]; then
     export GRADLE_HOME=/usr/share/gradle
 
     if [[ -d ${HOME}/Development/sdk/android-sdk-linux ]]; then
-        export ANDROID_SDK_HOME=${HOME}/Development/sdk/android-sdk-linux
+        export ANDROID_HOME=${HOME}/Development/sdk/android-sdk-linux
     fi
 fi
 
-if [[ -n "${ANDROID_SDK_HOME}" ]]; then
-    export PATH=${ANDROID_SDK_HOME}/tools:${ANDROID_SDK_HOME}/platform-tools:$PATH
+if [[ -n "${ANDROID_HOME}" ]]; then
+    export PATH=${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PATH
 
-    if [[ -d ${ANDROID_SDK_HOME}/ndk-bundle ]]; then
-        export ANDROID_NDK_HOME=${ANDROID_SDK_HOME}/ndk-bundle
-        export PATH=${ANDROID_NDK_HOME}:${PATH}
+    if [[ -d ${ANDROID_HOME}/ndk-bundle ]]; then
+        export PATH=${ANDROID_HOME}/ndk-bundle:${PATH}
     fi
-
-    export ANDROID_AVD_HOME=${HOME}/.android/avd
-    export ANDROID_HOME=${ANDROID_SDK_HOME}
 fi
 
 alias tmux="tmux -2"
