@@ -19,6 +19,9 @@ tags
 TAGS
 cscope.*
 
+# ide
+*.swp
+
 # ignored apps
 repo
 

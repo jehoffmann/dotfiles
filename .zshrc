@@ -1,6 +1,6 @@
 ### Check OS ###
 platform='unknown'
-case `uname` in
+case $(uname) in
   Darwin)
     platform='darwin'
     ;;
@@ -54,6 +54,8 @@ antigen bundle pip
 antigen bundle ruby
 antigen bundle rbenv
 
+antigen bundle djui/alias-tips
+ 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
@@ -99,8 +101,6 @@ if [[ $platform == "darwin" ]]; then
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 
-    export DOCKER_HOST='tcp://127.0.0.1:2375' 
-
     # change path and set homebrew bin in front of path
     export PATH="/usr/local/bin:$PATH"
 
@@ -139,3 +139,4 @@ fi
 
 alias tmux="tmux -2"
 alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"
+alias pipu3="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
