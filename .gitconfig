@@ -2,6 +2,7 @@
 [user]
 	name = Jens Hoffmann
 	email = jehoffma@gmail.com
+	signkey = 12A303D5
 [branch]
 	autosetupmerge = true
 	autosetuprebase = always
@@ -75,3 +76,5 @@
 	autoSquash = true
 [interactive]
 	diffFilter = diff-so-fancy |less
+[commit]
+	gpgsign = true
