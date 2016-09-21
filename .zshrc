@@ -117,6 +117,9 @@ if [[ $platform == "darwin" ]]; then
         export PATH=$PATH:/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin
     fi
 
+    # TMUX 2.2 kqueue woraround https://github.com/tmux/tmux/issues/475
+    export EVENT_NOKQUEUE=1
+
 elif [[ $platform == "linux" ]]; then
     
     export JAVA_HOME=/usr/lib/jvm/default-java
