@@ -48,6 +48,8 @@ antigen bundle docker
 antigen bundle sudo
 antigen bundle vundle
 
+antigen bundle ssh-agent
+
 antigen bundle python
 antigen bundle pip
 

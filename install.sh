@@ -33,3 +33,6 @@ echo "Installing antigen"
 git clone https://github.com/zsh-users/antigen.git ~/.antigen
 
 git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+echo "Installing tmux plugin manager"
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
