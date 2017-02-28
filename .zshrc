@@ -48,7 +48,7 @@ antigen bundle docker
 antigen bundle sudo
 antigen bundle vundle
 
-antigen bundle ssh-agent
+antigen bundle gpg-agent
 
 antigen bundle python
 antigen bundle pip
@@ -111,8 +111,8 @@ if [[ $platform == "darwin" ]]; then
     export GROOVY_HOME=/usr/local/opt/groovy/libexec
     export GRADLE_HOME=/usr/local/opt/gradle/libexec
 
-    if [[ -d ${HOME}/Development/sdk/android-sdk-macosx ]]; then
-        export ANDROID_HOME=${HOME}/Development/sdk/android-sdk-macosx
+    if [[ -d ${HOME}/Development/Android/sdk ]]; then
+        export ANDROID_HOME=${HOME}/Development/Android/sdk
     fi
 
     if [[ -d "/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin" ]]; then
