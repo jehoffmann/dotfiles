@@ -4,13 +4,8 @@
 [branch]
     autosetupmerge = true
     autosetuprebase = always
-[transfer]
-    fsckobjects = true
 [fetch]
-    fsckobjects = true
     prune = true
-[receive]
-    fsckobjects = true
 [push]
     default = current
 [merge]
@@ -60,6 +55,7 @@
     bc4 = trustExitCode
 [diff]
     tool = bc4
+	indentHeuristic = on
 [difftool "bc4"]
     cmd = bcompare \"$LOCAL\" \"$REMOTE\"
 [difftool "sourcetree"]
@@ -83,3 +79,5 @@
     diffFilter = diff-so-fancy |less
 [commit]
     gpgsign = true
+[credential]
+	helper = osxkeychain
