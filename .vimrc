@@ -32,8 +32,8 @@ set background=dark
 highlight clear SignColumn
 
 " C/C++
-"Plugin 'c.vim'
-"Plugin 'cpp.vim'
+Plugin 'c.vim'
+Plugin 'cpp.vim'
 
 " Lua
 "Plugin 'lua.vim'
@@ -47,6 +47,9 @@ Plugin 'pythoncomplete'
 " Groovy
 Plugin 'groovy.vim'
 Plugin 'tfnico/vim-gradle'
+
+" Android
+Plugin 'hsanson/vim-android'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
