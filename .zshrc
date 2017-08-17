@@ -64,7 +64,6 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle chrissicool/zsh-256color
 
 antigen bundle Tarrasch/zsh-autoenv
-#antigen bundle kennethreitz/autoenv
 
 # Fortunes
 #T2C_FORTUNE_DIR=${HOME}/.t2c_fortunes
@@ -102,10 +101,10 @@ antigen apply
 
 # Setup android env
 if [[ -d ${HOME}/Development/Android/sdk ]]; then
-    export ANDROID_HOME=${HOME}/Development/Android/sdk
-    export PATH=${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PATH
-    if [[ -d ${ANDROID_HOME}/ndk-bundle ]]; then
-        export PATH=${ANDROID_HOME}/ndk-bundle:${PATH}
+    export ANDROID_SDK_ROOT=${HOME}/Development/Android/sdk
+    export PATH=${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools:$PATH
+    if [[ -d ${ANDROID_SDK_ROOT}/ndk-bundle ]]; then
+        export PATH=${ANDROID_SDK_ROOT}/ndk-bundle:${PATH}
     fi
 fi
 
