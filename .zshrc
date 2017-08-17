@@ -57,7 +57,7 @@ antigen bundle ruby
 antigen bundle rbenv
 
 antigen bundle djui/alias-tips
- 
+
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
@@ -97,46 +97,13 @@ antigen theme gallifrey
 # Tell antigen that you're done.
 antigen apply
 
-if [[ $platform == "darwin" ]]; then
+# source platform specific rc
+[ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 
-    if [[ -z $(which brew) ]]; then
-        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    fi
-
-    # change path and set homebrew bin in front of path
-    export PATH="/usr/local/bin:$PATH"
-
-    export JAVA_HOME=$(/usr/libexec/java_home)
-    export ANT_HOME=/usr/local/opt/ant/libexec
-    export GROOVY_HOME=/usr/local/opt/groovy/libexec
-    export GRADLE_HOME=/usr/local/opt/gradle/libexec
-
-    if [[ -d ${HOME}/Development/Android/sdk ]]; then
-        export ANDROID_HOME=${HOME}/Development/Android/sdk
-    fi
-
-    if [[ -d "/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin" ]]; then
-        export PATH=$PATH:/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin
-    fi
-
-    # TMUX 2.2 kqueue woraround https://github.com/tmux/tmux/issues/475
-    export EVENT_NOKQUEUE=1
-
-elif [[ $platform == "linux" ]]; then
-    
-    export JAVA_HOME=/usr/lib/jvm/default-java
-    export ANT_HOME=/usr/share/ant
-    export GROOVY_HOME=/usr/share/groovy
-    export GRADLE_HOME=/usr/share/gradle
-
-    if [[ -d ${HOME}/Development/sdk/android-sdk-linux ]]; then
-        export ANDROID_HOME=${HOME}/Development/sdk/android-sdk-linux
-    fi
-fi
-
-if [[ -n "${ANDROID_HOME}" ]]; then
+# Setup android env
+if [[ -d ${HOME}/Development/Android/sdk ]]; then
+    export ANDROID_HOME=${HOME}/Development/Android/sdk
     export PATH=${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PATH
-
     if [[ -d ${ANDROID_HOME}/ndk-bundle ]]; then
         export PATH=${ANDROID_HOME}/ndk-bundle:${PATH}
     fi

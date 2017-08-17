@@ -25,9 +25,16 @@ install () {
 
 shopt -s dotglob extglob
 
-for F in !(bookmarks.xml|README.markdown|install.sh|.git|.gitmodules|.DS_Store); do
-  install ${F}
-done
+platform=$(uname |tr "[:upper:]" "[:lower:]")
+
+install .bash_profile
+install .gitconfig
+install .gitignore
+install .tigrc
+install .tmux.conf
+install .vimrc
+install .zshrc
+install .zshrc_${platform}
 
 echo "Installing antigen"
 git clone https://github.com/zsh-users/antigen.git ~/.antigen
