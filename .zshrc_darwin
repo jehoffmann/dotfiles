@@ -1,0 +1,18 @@
+if [[ -z $(which brew) ]]; then
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+# change path and set homebrew bin in front of path
+export PATH="/usr/local/bin:$PATH"
+
+export JAVA_HOME=$(/usr/libexec/java_home)
+export ANT_HOME=/usr/local/opt/ant/libexec
+export GROOVY_HOME=/usr/local/opt/groovy/libexec
+export GRADLE_HOME=/usr/local/opt/gradle/libexec
+
+if [[ -d "/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin" ]]; then
+    export PATH=$PATH:/Volumes/ESPTools/esp-open-sdk/xtensa-lx106-elf/bin
+fi
+
+# TMUX 2.2 kqueue woraround https://github.com/tmux/tmux/issues/475
+export EVENT_NOKQUEUE=1
