@@ -3,7 +3,7 @@ if [[ -z $(which brew) ]]; then
 fi
 
 # change path and set homebrew bin in front of path
-export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
 export JAVA_HOME=$(/usr/libexec/java_home)
 export ANT_HOME=/usr/local/opt/ant/libexec

@@ -16,9 +16,6 @@ if [[ -d "$HOME/bin" ]]; then
 	export PATH=$HOME/bin:$PATH
 fi
 
-[ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
-[ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
-
 ANTIGEN_HOME=$HOME/.antigen
 [ -f $ANTIGEN_HOME/antigen.zsh ] || git clone\
       https://github.com/zsh-users/antigen.git $ANTIGEN_HOME
@@ -50,9 +47,6 @@ antigen bundle vundle
 
 antigen bundle gpg-agent
 
-antigen bundle python
-antigen bundle pip
-
 antigen bundle ruby
 antigen bundle rbenv
 
@@ -77,18 +71,24 @@ if [[ $platform == 'darwin' ]]; then
     antigen bundle terminalapp
     antigen bundle brew
     antigen bundle xcode
-    antigen bundle vagrant
 fi
 
-# Python config
-export PIP_RESPECT_VIRTUALENV=true
-# cache pip-installed packages to avoid re-downloading
-export WORKON_HOME=$HOME/.virtualenvs
-#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+PYTHON2=$(which python2)
+if [[ -n "${PYTHON2}" ]]; then
+  # Python config
+  export PIP_RESPECT_VIRTUALENV=true
+  # cache pip-installed packages to avoid re-downloading
+  export WORKON_HOME=$HOME/.virtualenvs
+  export VIRTUALENVWRAPPER_PYTHON=${PYTHON2}
+  export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
-antigen bundle virtualenv
-antigen bundle virtualenvwrapper
+  antigen bundle python
+  antigen bundle pip
+  antigen bundle virtualenv
+  antigen bundle virtualenvwrapper
+
+  alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"
+fi
 
 # Load the theme.
 antigen theme gallifrey
@@ -98,6 +98,8 @@ antigen apply
 
 # source platform specific rc
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
+[ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
+[ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
 
 # Setup android env
 if [[ -d ${HOME}/Development/Android/sdk ]]; then
@@ -109,5 +111,3 @@ if [[ -d ${HOME}/Development/Android/sdk ]]; then
 fi
 
 alias tmux="tmux -2"
-alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"
-alias pipu3="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
