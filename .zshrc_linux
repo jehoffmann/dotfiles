@@ -1,3 +1,6 @@
+test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$PATH"
+test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+
 export JAVA_HOME=/usr/lib/jvm/default-java
 export ANT_HOME=/usr/share/ant
 export GROOVY_HOME=/usr/share/groovy
