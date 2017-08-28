@@ -28,6 +28,8 @@ shopt -s dotglob extglob
 platform=$(uname |tr "[:upper:]" "[:lower:]")
 
 install .bash_profile
+install .bashrc
+install .bashrc_${platform}
 install .editorconfig
 install .gitconfig
 install .gitignore
