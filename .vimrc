@@ -2,76 +2,42 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" check if vundle is installed
-if !isdirectory(expand("~/.vim/bundle/Vundle.vim/.git"))
-    !git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin('~/.vim/bundle')
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
-Plugin 'bling/vim-airline'
-set laststatus=2
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tmuxline#enabled = 1
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-sleuth'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ntpeters/vim-better-whitespace'
 
-Plugin 'kien/rainbow_parentheses.vim'
-Plugin 'rizzatti/dash.vim'
-Plugin 'majutsushi/tagbar'
-Plugin 'edkolev/tmuxline.vim'
-let g:tmuxline_powerline_separators = 0
+" Git Plugins
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-fugitive'
 
-" Git integration
-Plugin 'tpope/vim-git'
-Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
+" Syntax checking
+Plug 'vim-syntastic/syntastic'
+
+call plug#end()
+
 set background=dark
-highlight clear SignColumn
 
-" C/C++
-Plugin 'c.vim'
-Plugin 'cpp.vim'
-
-" Lua
-"Plugin 'lua.vim'
-"Plugin 'luarefvim'
-"Plugin 'lua-support'
-
-" Python
-Plugin 'python.vim'
-Plugin 'pythoncomplete'
-
-" Groovy
-Plugin 'groovy.vim'
-Plugin 'tfnico/vim-gradle'
-
-" Android
-Plugin 'hsanson/vim-android'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-
-" Enable filetype plugins
-filetype plugin on
-
-let g:tmuxline_powerline_separators = 0
-
-" Set to auto read when a file is changed from the outside
-set autoread
-
-"Always show current position
-set ruler
+let g:airline_theme='dark'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+"let g:airline#extensions#tmuxline#enabled = 1
 
 " Show ruler at 80 and 120
 set colorcolumn=80,120
+highlight clear SignColumn
 highlight ColorColumn ctermbg=LightGray
-
-" Show line numbers
-set number
 
 " Highligh active line
 hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white"
@@ -82,16 +48,11 @@ augroup CursorLine
     au WinLeave * setlocal nocursorline
 augroup END
 
+set number
 
-" Configure backspace so it acts as it should act
-set backspace=eol,start,indent
+" Set to auto read when a file is changed from the outside
+set autoread
 
-"  Enable syntax highlighting
-syntax enable
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Use spaces instead of tabs
 set expandtab
 
@@ -110,13 +71,14 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-function! NumberToggle()
-  if(&relativenumber == 1)
-    set number
-  else
-    set relativenumber
-  endif
-endfunc
+ " Syntasic config
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_signs = 1
 
-nnoremap <C-n> :call NumberToggle()<cr>
-
+let g:syntastic_c_compiler = 'clang'
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall'
