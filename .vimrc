@@ -51,6 +51,10 @@ Plugin 'tfnico/vim-gradle'
 " Android
 Plugin 'hsanson/vim-android'
 
+" Line number switch automation
+Plugin 'jeffkreeftmeijer/vim-numbertoggle'
+:set number relativenumber
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -69,9 +73,6 @@ set ruler
 " Show ruler at 80 and 120
 set colorcolumn=80,120
 highlight ColorColumn ctermbg=LightGray
-
-" Show line numbers
-set number
 
 " Highligh active line
 hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white"
@@ -109,14 +110,3 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
-
-function! NumberToggle()
-  if(&relativenumber == 1)
-    set number
-  else
-    set relativenumber
-  endif
-endfunc
-
-nnoremap <C-n> :call NumberToggle()<cr>
-
