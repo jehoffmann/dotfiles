@@ -13,16 +13,23 @@
 .jupite
 .autotools
 
+# idea, clion....
+cmake-build*
+
+#vscode
+.vscode
+
 # indices
 .tags*
 tags
 TAGS
 cscope.*
 
-# ide
+# vim
 *.swp
 
 # ignored apps
 repo
 
 .autoenv.*
+
