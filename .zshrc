@@ -87,7 +87,8 @@ if [[ -n "${PYTHON2}" ]]; then
   antigen bundle virtualenv
   antigen bundle virtualenvwrapper
 
-  alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"
+  alias pipu2="pip2 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip2 install -U"
+  alias pipu3="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
 fi
 
 # Load the theme.
