@@ -14,6 +14,8 @@ Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
+Plug 'ekalinin/Dockerfile.vim', { 'for' : 'Dockerfile' }
+
 " Initialize plugin system
 call plug#end()
 
