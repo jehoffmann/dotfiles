@@ -38,7 +38,6 @@
     excludesfile = ~/.gitignore
     autocrlf = input
     editor = vim
-    pager = diff-so-fancy | less -r
 [alias]
     st = status
     ci = commit
@@ -75,5 +74,3 @@
     rebase = true
 [reabse]
     autoSquash = true
-[interactive]
-    diffFilter = diff-so-fancy |less
