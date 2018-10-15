@@ -54,3 +54,7 @@ export SCM_CHECK=true
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
 
+PLATFORM=$(uname |tr '[:upper:]' '[:lower:]')
+test -e "${HOME}/.bashrc_${PLATFORM}" && source ${HOME}/.bashrc_${PLATFORM}
+test -e "${HOME}/.bashrc_local" && source "${HOME}/.bashrc_local"
+
