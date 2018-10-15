@@ -14,7 +14,21 @@ Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
+Plug 'scrooloose/syntastic'
+
 Plug 'ekalinin/Dockerfile.vim', { 'for' : 'Dockerfile' }
+
+Plug 'vhdirk/vim-cmake'
+Plug 'vim-scripts/c.vim', { 'for': 'c' }
+
+Plug 'tfnico/vim-gradle'
+Plug 'mikelue/vim-maven-plugin'
+
+Plug 'rust-lang/rust.vim'
+
+Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-bundler'
+Plug 'thoughtbot/vim-rspec'
 
 " Initialize plugin system
 call plug#end()
@@ -32,6 +46,20 @@ let g:tmuxline_powerline_separators = 0
 
 " Better whitespace config
 let g:show_spaces_that_precede_tabs=1
+
+" Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" C Plugin
+let g:C_UseTool_cmake   = 'yes'
+let g:C_UseTool_doxygen = 'yes'
 
 set background=dark
 
@@ -52,6 +80,16 @@ augroup CursorLine
     au WinLeave * setlocal nocursorline
 augroup END
 
-
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
+
+set tabstop=4       " The width of a TAB is set to 4.
+                    " Still it is a \t. It is just that
+                    " Vim will interpret it to be having
+                    " a width of 4.
+
+set shiftwidth=4    " Indents will have a width of 4
+
+set softtabstop=4   " Sets the number of columns for a TAB
+
+set expandtab       " Expand TABs to spaces

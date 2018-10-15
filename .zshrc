@@ -34,16 +34,15 @@ zstyle :omz:plugins:ssh-agent identities id_rsa
 antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle adb
 antigen bundle git
 antigen bundle tmux
+antigen bundle vscode
 antigen bundle sublime
 antigen bundle command-not-found
 antigen bundle common-aliases
 antigen bundle history
 antigen bundle docker
 antigen bundle sudo
-antigen bundle vundle
 
 antigen bundle gpg-agent
 
@@ -73,21 +72,20 @@ if [[ $platform == 'darwin' ]]; then
     antigen bundle xcode
 fi
 
-PYTHON2=$(which python2)
-if [[ -n "${PYTHON2}" ]]; then
+PYTHON3=$(which python3)
+if [[ -n "${PYTHON3}" ]]; then
   # Python config
   export PIP_RESPECT_VIRTUALENV=true
   # cache pip-installed packages to avoid re-downloading
   export WORKON_HOME=$HOME/.virtualenvs
-  export VIRTUALENVWRAPPER_PYTHON=${PYTHON2}
+  export VIRTUALENVWRAPPER_PYTHON=${PYTHON3}
   export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
   antigen bundle python
   antigen bundle pip
-  antigen bundle virtualenv
   antigen bundle virtualenvwrapper
 
-  alias pipu="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U"
+  alias pipu="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
 fi
 
 # Load the theme.
