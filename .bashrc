@@ -53,3 +53,8 @@ export SCM_CHECK=true
 
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
+
+# source platform specific rc
+platform=$(uname |tr "[:upper:]" "[:lower:]")
+[ -e "${HOME}/.bashrc_${platform}" ] && source "${HOME}/.bashrc_${platform}"
+[ -e "${HOME}/.bashrc_local" ] && source "${HOME}/.bashrc_local"

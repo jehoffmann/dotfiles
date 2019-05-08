@@ -84,6 +84,8 @@ if [[ -n "${PYTHON3}" ]]; then
   antigen bundle python
   antigen bundle pip
   antigen bundle virtualenvwrapper
+  antigen bundle iboyperson/pipenv-zsh
+  antigen bundle autoenv
 
   alias pipu="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
 fi
