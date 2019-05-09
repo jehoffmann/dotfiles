@@ -21,7 +21,6 @@ Plug 'ekalinin/Dockerfile.vim', { 'for' : 'Dockerfile' }
 
 Plug 'vhdirk/vim-cmake'
 Plug 'vim-scripts/c.vim'
-Plug 'brookhong/cscope.vim'
 
 Plug 'tfnico/vim-gradle'
 Plug 'mikelue/vim-maven-plugin'
