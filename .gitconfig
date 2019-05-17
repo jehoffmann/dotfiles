@@ -6,9 +6,15 @@
     autosetuprebase = always
 [fetch]
     prune = true
-[merge]
-    summary = true
-    tool = bc4
+[rerere]
+    enabled = true
+[pull]
+    rebase = true
+[push]
+    default = current
+[rebase]
+    autoSquash = true
+    autoStash = true
 [color]
     ui = auto
 [color "branch"]
@@ -48,31 +54,9 @@
     ls = ls-files
     remotes = !git remote -v |awk '{ if (NR % 2 ==0)  print $1\" \" $2}'
     pushf = push --force-with-lease
+[merge]
+    summary = true
 [mergetool]
     keepBackup = true
-    bc4 = trustExitCode
 [diff]
-    tool = bc4
 	indentHeuristic = on
-[difftool "bc4"]
-    cmd = bcompare \"$LOCAL\" \"$REMOTE\"
-[difftool "sourcetree"]
-    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-[mergetool "sourcetree"]
-    cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-    trustExitCode = true
-[mergetool "bc4"]
-    cmd = bcomp \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
-    trustExitCode = true
-[mergetool "cp"]
-    cmd = /bin/cp -v \"$REMOTE\" \"$MERGED\"
-    trustExitCode = true
-[rerere]
-    enabled = true
-[pull]
-    rebase = true
-[push]
-    default = current
-[rebase]
-    autoSquash = true
-    autoStash = true
