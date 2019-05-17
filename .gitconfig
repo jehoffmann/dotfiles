@@ -6,8 +6,6 @@
     autosetuprebase = always
 [fetch]
     prune = true
-[push]
-    default = current
 [merge]
     summary = true
     tool = bc4
@@ -43,12 +41,13 @@
     ci = commit
     br = branch
     co = checkout
+    conflicts = diff --name-only --diff-filter=U
     df = diff
     dc = diff --cached
     lol = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     ls = ls-files
     remotes = !git remote -v |awk '{ if (NR % 2 ==0)  print $1\" \" $2}'
-    conflicts = diff --name-only --diff-filter=U
+    pushf = push --force-with-lease
 [mergetool]
     keepBackup = true
     bc4 = trustExitCode
@@ -72,5 +71,8 @@
     enabled = true
 [pull]
     rebase = true
-[reabse]
+[push]
+    default = current
+[rebase]
     autoSquash = true
+    autoStash = true
