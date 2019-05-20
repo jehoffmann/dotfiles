@@ -59,4 +59,6 @@
 [mergetool]
     keepBackup = true
 [diff]
-	indentHeuristic = on
+    indentHeuristic = on
+[difftool]
+    prompt = false
