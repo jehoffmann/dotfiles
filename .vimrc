@@ -17,10 +17,10 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-surround'
 
-Plug 'ekalinin/Dockerfile.vim', { 'for' : 'Dockerfile' }
+Plug 'ekalinin/Dockerfile.vim', { 'on' : 'Dockerfile' }
 
 Plug 'vhdirk/vim-cmake'
-Plug 'vim-scripts/c.vim'
+Plug 'vim-scripts/c.vim', { 'on' : 'C' }
 
 Plug 'tfnico/vim-gradle'
 Plug 'mikelue/vim-maven-plugin'
