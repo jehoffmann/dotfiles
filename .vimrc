@@ -8,11 +8,14 @@ endif
 " Specify a directory for plugins
 call plug#begin('~/.vim/bundle')
 
-Plug 'bling/vim-airline' |Plug 'vim-airline/vim-airline-themes'
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'edkolev/tmuxline.vim'
 Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
+
+Plug 'terryma/vim-multiple-cursors'
 
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-surround'

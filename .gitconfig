@@ -54,6 +54,7 @@
     ls = ls-files
     remotes = !git remote -v |awk '{ if (NR % 2 ==0)  print $1\" \" $2}'
     pushf = push --force-with-lease
+    unstage = reset HEAD --
 [merge]
     summary = true
 [mergetool]
