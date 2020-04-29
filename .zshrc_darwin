@@ -20,3 +20,10 @@ export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
 
 export PATH="$PATH:/Users/jhoffmann/Development/esp/esp-idf/tools:/Users/jhoffmann/Development/esp/xtensa-esp32-elf/bin"
 export IDF_PATH="/Users/jhoffmann/Development/esp/esp-idf"
+
+alias python="/usr/local/bin/python3"
+
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"

@@ -1,5 +1,5 @@
 if [ ! -d "${HOME}/.bash_it" ]; then
-  git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it
+  git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_i
   ~/.bash-it/install.sh -s
 fi
 
@@ -8,7 +8,7 @@ export BASH_IT="${HOME}/.bash_it"
 
 # Lock and Load a custom theme file
 # location /.bash_it/themes/
-export BASH_IT_THEME='envy'
+export BASH_IT_THEME='gallifrey'
 
 # (Advanced): Change this to the name of your remote repo if you
 # cloned bash-it with a remote other than origin such as `bash-it`.
@@ -58,3 +58,5 @@ source "$BASH_IT"/bash_it.sh
 platform=$(uname |tr "[:upper:]" "[:lower:]")
 [ -e "${HOME}/.bashrc_${platform}" ] && source "${HOME}/.bashrc_${platform}"
 [ -e "${HOME}/.bashrc_local" ] && source "${HOME}/.bashrc_local"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

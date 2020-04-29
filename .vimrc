@@ -28,7 +28,7 @@ Plug 'vim-scripts/c.vim', { 'on' : 'C' }
 Plug 'tfnico/vim-gradle'
 Plug 'mikelue/vim-maven-plugin'
 
-Plug 'rust-lang/rust.vim'
+Plug 'rust-lang/rust.vim', { 'on' : 'Rust' }
 
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-bundler'
@@ -97,3 +97,5 @@ set shiftwidth=4    " Indents will have a width of 4
 set softtabstop=4   " Sets the number of columns for a TAB
 
 set expandtab       " Expand TABs to spaces
+
+set rtp+=/usr/local/opt/fzf

@@ -51,6 +51,8 @@ antigen bundle rbenv
 
 antigen bundle djui/alias-tips
 
+antigen bundle gparker42/zsh-dirnav
+
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
@@ -84,8 +86,8 @@ if [[ -n "${PYTHON3}" ]]; then
   antigen bundle python
   antigen bundle pip
   antigen bundle virtualenvwrapper
-  antigen bundle iboyperson/pipenv-zsh
-  antigen bundle autoenv
+  #antigen bundle iboyperson/pipenv-zsh
+  #antigen bundle autoenv
 
   alias pipu="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
 fi
@@ -111,3 +113,5 @@ if [[ -d ${HOME}/Development/Android/sdk ]]; then
 fi
 
 alias tmux="tmux -2"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
