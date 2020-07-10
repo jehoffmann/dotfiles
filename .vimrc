@@ -17,6 +17,9 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
 Plug 'terryma/vim-multiple-cursors'
 
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'nathanaelkane/vim-indent-guides'
+
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-surround'
 
@@ -83,6 +86,14 @@ augroup CursorLine
     au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     au WinLeave * setlocal nocursorline
 augroup END
+
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_guide_size = 1
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
