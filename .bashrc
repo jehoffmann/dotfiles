@@ -59,4 +59,5 @@ platform=$(uname |tr "[:upper:]" "[:lower:]")
 [ -e "${HOME}/.bashrc_${platform}" ] && source "${HOME}/.bashrc_${platform}"
 [ -e "${HOME}/.bashrc_local" ] && source "${HOME}/.bashrc_local"
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
+[ -d $HOME/.cargo/env ] && source $HOME/.cargo/env

@@ -1,7 +1,5 @@
 #ADDED BY 010 EDITOR
 export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
 
-export PATH="$HOME/.cargo/bin:$PATH"
-
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"

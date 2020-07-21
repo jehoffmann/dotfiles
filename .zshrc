@@ -115,3 +115,4 @@ fi
 alias tmux="tmux -2"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -r ~/.cargo/env ] && source ~/.cargo/env

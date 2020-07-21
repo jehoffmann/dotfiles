@@ -2,8 +2,6 @@ if [[ -z $(which brew) ]]; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-test -r ~/.cargo/env && source ~/.cargo/env
-
 # change path and set homebrew bin in front of path
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
