@@ -13,6 +13,7 @@
 [push]
     default = current
 [rebase]
+    abbreviateCommands = true
     autoSquash = true
     autoStash = true
 [color]
@@ -40,7 +41,6 @@
 [core]
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     excludesfile = ~/.gitignore
-    autocrlf = input
     editor = vim
 [alias]
     st = status
