@@ -2,26 +2,10 @@ if [[ -z $(which brew) ]]; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-# change path and set homebrew bin in front of path
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-
 export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
 export ANT_HOME=/usr/local/opt/ant/libexec
 export GROOVY_HOME=/usr/local/opt/groovy/libexec
 export GRADLE_HOME=/usr/local/opt/gradle/libexec
 
-# TMUX 2.2 kqueue woraround https://github.com/tmux/tmux/issues/475
-export EVENT_NOKQUEUE=1
-
 #ADDED BY 010 EDITOR
 export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
-
-export PATH="$PATH:/Users/jhoffmann/Development/esp/esp-idf/tools:/Users/jhoffmann/Development/esp/xtensa-esp32-elf/bin"
-export IDF_PATH="/Users/jhoffmann/Development/esp/esp-idf"
-
-alias python="/usr/local/bin/python3"
-
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"

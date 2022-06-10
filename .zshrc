@@ -11,10 +11,31 @@ esac
 
 host=$(hostname -s)
 
-### Path ###
-if [[ -d "$HOME/bin" ]]; then
-	export PATH=$HOME/bin:$PATH
-fi
+function gi() { curl -sLw n https://www.toptal.com/developers/gitignore/api/$@ ;}
+
+# Returns whether the given command is executable or aliased.
+function _has() {
+  return $(whence $1 >/dev/null)
+}
+
+# Prepend a directory to path, if it exists and isn't already in the path.
+function _prepend_to_path() {
+  if [ -d $1 -a -z ${path[(r)$1]} ]; then
+    path=($1 $path);
+  fi
+}
+
+# Append a directory to path, if it exists and isn't already in the path.
+function _append_to_path() {
+  if [ -d $1 -a -z ${path[(r)$1]} ]; then
+    path=($path $1);
+  fi
+}
+
+# Add common bin directories to path.
+_prepend_to_path /usr/local/bin
+_prepend_to_path /usr/local/sbin
+_prepend_to_path $HOME/.local/bin
 
 ANTIGEN_HOME=$HOME/.antigen
 [ -f $ANTIGEN_HOME/antigen.zsh ] || git clone\
@@ -37,33 +58,15 @@ antigen use oh-my-zsh
 antigen bundle git
 antigen bundle tmux
 antigen bundle vscode
-antigen bundle sublime
 antigen bundle command-not-found
 antigen bundle common-aliases
 antigen bundle history
-antigen bundle docker
 antigen bundle sudo
 
-antigen bundle gpg-agent
-
-antigen bundle ruby
-antigen bundle rbenv
-
-antigen bundle djui/alias-tips
-
-antigen bundle gparker42/zsh-dirnav
-
-# Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
-
 antigen bundle chrissicool/zsh-256color
-
 antigen bundle Tarrasch/zsh-autoenv
-
-# Fortunes
-#T2C_FORTUNE_DIR=${HOME}/.t2c_fortunes
-#T2C_FORTUNE_URL=ssh://git@bitbucket.org/Satarus/t2c_fortunes.git
-#antigen bundle ssh://git@bitbucket.org/Satarus/t2c_fortunes.git contrib/t2c_fortunes --branch=next
+antigen bundle mattmc3/zsh-safe-rm
 
 if [[ $platform == 'darwin' ]]; then
     antigen bundle osx
@@ -74,45 +77,63 @@ if [[ $platform == 'darwin' ]]; then
     antigen bundle xcode
 fi
 
-PYTHON3=$(which python3)
-if [[ -n "${PYTHON3}" ]]; then
-  # Python config
-  export PIP_RESPECT_VIRTUALENV=true
-  # cache pip-installed packages to avoid re-downloading
-  export WORKON_HOME=$HOME/.virtualenvs
-  export VIRTUALENVWRAPPER_PYTHON=${PYTHON3}
-  export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+if _has docker; then
+  antigen bundle docker
+fi
 
+################ Python ############
+if _has python3; then
   antigen bundle python
   antigen bundle pip
-  antigen bundle virtualenvwrapper
-  #antigen bundle iboyperson/pipenv-zsh
-  #antigen bundle autoenv
 
+  alias python="python3"
   alias pipu="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
+
+  if _has virtualenv; then
+    antigen bundle virtualenvwrapper
+    export VIRTUALENVWRAPPER_PYTHON=$(whence python3)
+    export VIRTUALENVWRAPPER_VIRTUALENV=$(whence virtualenv)
+  fi
+  export PIP_RESPECT_VIRTUALENV=true
+fi
+
+################ Rust ################
+if [ -r $HOME/.cargo ]; then
+  _append_to_path ${CARGO_HOME}/bin
+
+  export RUSTUP_HOME=$HOME/.rustup
+  export CARGO_HOME=$HOME/.cargo
+
+  # Install rustup if it isn't installed already
+  if ! [[ -s "${HOME}/.rustup" ]]; then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- --no-modify-path -y
+  fi
+
+  [ -r ${CARGO_HOME}/env ] && source ${CARGO_HOME}/env
+fi
+
+################ Ruby ################
+if _has ruby; then
+  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+fi
+if [[ -d ${HOME}/.rbenv/bin ]]; then
+    export PATH="$HOME/.rbenv/bin:$PATH"
+    eval "$(rbenv init -)"
 fi
 
 # Load the theme.
-antigen theme gallifrey
+antigen theme robbyrussell
 
 # Tell antigen that you're done.
 antigen apply
+
+if _has rg; then
+  export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+fi
 
 # source platform specific rc
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
 [ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
 
-# Setup android env
-if [[ -d ${HOME}/Development/Android/sdk ]]; then
-    export ANDROID_SDK_ROOT=${HOME}/Development/Android/sdk
-    export PATH=${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools:$PATH
-    if [[ -d ${ANDROID_SDK_ROOT}/ndk-bundle ]]; then
-        export PATH=${ANDROID_SDK_ROOT}/ndk-bundle:${PATH}
-    fi
-fi
-
-alias tmux="tmux -2"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-[ -r ~/.cargo/env ] && source ~/.cargo/env

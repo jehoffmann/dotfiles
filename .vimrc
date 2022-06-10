@@ -8,7 +8,7 @@ endif
 " Specify a directory for plugins
 call plug#begin('~/.vim/bundle')
 
-Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'edkolev/tmuxline.vim'
 Plug 'ntpeters/vim-better-whitespace'
@@ -20,7 +20,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 
-Plug 'scrooloose/syntastic'
+Plug 'vim-syntastic/syntastic'
 Plug 'tpope/vim-surround'
 
 Plug 'ekalinin/Dockerfile.vim', { 'on' : 'Dockerfile' }
@@ -31,11 +31,15 @@ Plug 'vim-scripts/c.vim', { 'on' : 'C' }
 Plug 'tfnico/vim-gradle'
 Plug 'mikelue/vim-maven-plugin'
 
-Plug 'rust-lang/rust.vim', { 'on' : 'Rust' }
+Plug 'rust-lang/rust.vim'
 
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-bundler'
 Plug 'thoughtbot/vim-rspec'
+
+Plug 'preservim/tagbar'
+
+Plug 'bogado/file-line'
 
 " Initialize plugin system
 call plug#end()
@@ -108,5 +112,7 @@ set shiftwidth=4    " Indents will have a width of 4
 set softtabstop=4   " Sets the number of columns for a TAB
 
 set expandtab       " Expand TABs to spaces
+
+let g:rustfmt_autosave = 1
 
 set rtp+=/usr/local/opt/fzf
