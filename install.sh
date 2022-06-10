@@ -27,7 +27,6 @@ shopt -s dotglob extglob
 
 platform=$(uname |tr "[:upper:]" "[:lower:]")
 
-install .bash_profile
 install .bashrc
 install .bashrc_${platform}
 install .editorconfig
@@ -39,11 +38,11 @@ install .vimrc
 install .zshrc
 install .zshrc_${platform}
 
+# echo install bash-it
+git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it && ~/.bash_it/install.sh -n
+
 echo "Installing antigen"
 git clone https://github.com/zsh-users/antigen.git ~/.antigen
-
-echo "Installing vundle"
-git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 echo "Installing tmux plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
