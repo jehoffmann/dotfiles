@@ -2,6 +2,9 @@
 [include]
     path = ~/.gitconfig_user
 
+[init]
+    defaultBranch = main
+
 [branch]
     autosetupmerge = true
     autosetuprebase = always

@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 ### Check OS ###
 platform='unknown'
 case $(uname) in
@@ -65,8 +72,9 @@ antigen bundle sudo
 
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle chrissicool/zsh-256color
-antigen bundle Tarrasch/zsh-autoenv
 antigen bundle mattmc3/zsh-safe-rm
+
+antigen theme romkatv/powerlevel10k
 
 if [[ $platform == 'darwin' ]]; then
     antigen bundle osx
@@ -113,16 +121,10 @@ if [ -r $HOME/.cargo ]; then
 fi
 
 ################ Ruby ################
-if _has ruby; then
-  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-fi
 if [[ -d ${HOME}/.rbenv/bin ]]; then
     export PATH="$HOME/.rbenv/bin:$PATH"
     eval "$(rbenv init -)"
 fi
-
-# Load the theme.
-antigen theme robbyrussell
 
 # Tell antigen that you're done.
 antigen apply
@@ -137,3 +139,6 @@ fi
 [ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

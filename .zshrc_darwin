@@ -2,10 +2,5 @@ if [[ -z $(which brew) ]]; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
-export ANT_HOME=/usr/local/opt/ant/libexec
-export GROOVY_HOME=/usr/local/opt/groovy/libexec
-export GRADLE_HOME=/usr/local/opt/gradle/libexec
-
 #ADDED BY 010 EDITOR
-export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
+test -x "/Applications/010 Editor.app/Contents/CmdLine" && export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
