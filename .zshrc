@@ -133,6 +133,15 @@ if _has rg; then
   export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 fi
 
+if _has nvim; then
+    export EDITOR=nvim
+elif _has vim; then
+    export EDITOR=vim
+else
+    export EDITOR=vi
+fi
+
+
 # source platform specific rc
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
