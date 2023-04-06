@@ -10,7 +10,6 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'edkolev/tmuxline.vim'
 Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
@@ -36,8 +35,6 @@ Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-bundler'
 Plug 'thoughtbot/vim-rspec'
-
-Plug 'preservim/tagbar'
 
 Plug 'bogado/file-line'
 
