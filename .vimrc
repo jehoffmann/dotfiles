@@ -12,6 +12,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ntpeters/vim-better-whitespace'
 
+Plug 'christoomey/vim-tmux-navigator'
+
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
 Plug 'terryma/vim-multiple-cursors'
