@@ -86,6 +86,7 @@ if [[ $platform == 'darwin' ]]; then
 fi
 
 if _has docker; then
+  # https://github.com/ohmyzsh/ohmyzsh/issues/11817
   antigen bundle docker
 fi
 
@@ -135,10 +136,19 @@ fi
 
 if _has nvim; then
     export EDITOR=nvim
+    alias vim='nvim'
 elif _has vim; then
     export EDITOR=vim
 else
     export EDITOR=vi
+fi
+
+if  _has bat; then
+    alias cat='bat'
+fi
+
+if _has eza; then
+    alias ls='eza'
 fi
 
 
@@ -149,5 +159,27 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && source /opt/homebrew/etc/profile.d/autojump.sh
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/jhoffmann/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/jhoffmann/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/jhoffmann/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/jhoffmann/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

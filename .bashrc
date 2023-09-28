@@ -73,4 +73,5 @@ platform=$(uname |tr "[:upper:]" "[:lower:]")
 [ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
 [ -d $HOME/.cargo/env ] && source $HOME/.cargo/env
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+ [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+. "$HOME/.cargo/env"
