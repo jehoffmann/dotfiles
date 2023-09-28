@@ -1,7 +1,6 @@
 # User information. Replace with your own data, obviously.
-[user]
-    name = Jens Hoffmann
-    email = jehoffma@mail.com
+[include]
+    path = ~/.gitconfig_user
 
 [includeIf "gitdir:~/Developer/work/"]
     path = ~/Developer/work/.gitconfig
@@ -69,3 +68,12 @@
 
 [difftool]
     prompt = false
+
+[difftool "bc"]
+	trustExitCode = true
+
+[mergetool "bc"]
+	trustExitCode = true
+
+[init]
+	defaultBranch = main
