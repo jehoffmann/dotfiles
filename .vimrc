@@ -112,4 +112,7 @@ set expandtab       " Expand TABs to spaces
 
 let g:rustfmt_autosave = 1
 
+"packadd! dracula_pro
+"colorscheme dracula_pro
+
 set rtp+=/usr/local/opt/fzf
