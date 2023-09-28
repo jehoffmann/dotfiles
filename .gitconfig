@@ -1,6 +1,10 @@
 # User information. Replace with your own data, obviously.
-[include]
-    path = ~/.gitconfig_user
+[user]
+    name = Jens Hoffmann
+    email = jehoffma@mail.com
+
+[includeIf "gitdir:~/Developer/work/"]
+    path = ~/Developer/work/.gitconfig
 
 [init]
     defaultBranch = main
