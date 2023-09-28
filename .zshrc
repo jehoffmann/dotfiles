@@ -77,8 +77,8 @@ antigen bundle mattmc3/zsh-safe-rm
 antigen theme romkatv/powerlevel10k
 
 if [[ $platform == 'darwin' ]]; then
-    antigen bundle osx
-    antigen bundle copydir
+    antigen bundle macos
+    antigen bundle copypath
     antigen bundle copyfile
     antigen bundle terminalapp
     antigen bundle brew
