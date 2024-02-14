@@ -55,6 +55,7 @@
     remotes = !git remote -v |awk '{ if (NR % 2 ==0)  print $1\" \" $2}'
     pushf = push --force-with-lease
     unstage = reset HEAD --
+    resign = "!re() { git rebase --exec 'git commit --amend --no-edit -n -S' -i $1; }; re"
 
 [merge]
     summary = true
