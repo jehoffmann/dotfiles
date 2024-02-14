@@ -19,3 +19,7 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
+
+export SSH_AUTH_SOCK="$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock"

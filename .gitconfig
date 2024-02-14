@@ -74,6 +74,3 @@
 
 [mergetool "bc"]
 	trustExitCode = true
-
-[init]
-	defaultBranch = main
