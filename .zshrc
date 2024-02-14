@@ -87,7 +87,7 @@ fi
 
 if _has docker; then
   # https://github.com/ohmyzsh/ohmyzsh/issues/11817
-  antigen bundle docker
+#  antigen bundle docker
 fi
 
 ################ Python ############

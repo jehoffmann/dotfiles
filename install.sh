@@ -56,6 +56,9 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 #    done
 #fi
 
-echo "Install astronvim"
+#git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+
+
+#echo "Install astronvim"
 git clone --depth=1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 git clone git@github.com:jehoffmann/astronvim_config.git ~/.config/nvim/lua/user
