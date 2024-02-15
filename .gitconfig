@@ -56,6 +56,9 @@
     pushf = push --force-with-lease
     unstage = reset HEAD --
     resign = "!re() { git rebase --exec 'git commit --amend --no-edit -n -S' -i $1; }; re"
+    css = commit --signoff --gpg-sign
+    cso = commit --signoff
+    cs = commit --gpg-sign
 
 [merge]
     summary = true
@@ -79,6 +82,9 @@
 [color]
 	ui = auto
 
+# if format is ssh we need a allowed_signers file see next section
+# also set the user.signingkey to your pubkey. In case of gpg and a subkey
+# set it like signingkey=<keyid>!
 [gpg]
 	format = ssh
 
