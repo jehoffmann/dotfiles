@@ -75,3 +75,12 @@
 
 [mergetool "bc"]
 	trustExitCode = true
+
+[color]
+	ui = auto
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
