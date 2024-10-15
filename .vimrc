@@ -40,6 +40,8 @@ Plug 'thoughtbot/vim-rspec'
 
 Plug 'bogado/file-line'
 
+Plug 'rizzatti/dash.vim'
+
 " Initialize plugin system
 call plug#end()
 
