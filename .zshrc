@@ -72,9 +72,9 @@ antigen bundle sudo
 
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle chrissicool/zsh-256color
-antigen bundle mattmc3/zsh-safe-rm
 
 antigen theme romkatv/powerlevel10k
+
 
 if [[ $platform == 'darwin' ]]; then
     antigen bundle macos
@@ -134,16 +134,13 @@ if _has rg; then
   export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 fi
 
-if _has nvim; then
-    export EDITOR=nvim
-    alias vim='nvim'
-elif _has vim; then
+if _has vim; then
     export EDITOR=vim
 else
     export EDITOR=vi
 fi
 
-if  _has bat; then
+if _has bat; then
     alias cat='bat'
 fi
 
@@ -151,59 +148,21 @@ if _has eza; then
     alias ls='eza'
 fi
 
+if _has btop; then
+    alias top=btop
+fi
 
 # source platform specific rc
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
 [ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-if _has fzf; then
-  # Options to fzf command
-  export FZF_COMPLETION_OPTS='--border --info=inline'
-
-  # Use fd (https://github.com/sharkdp/fd) instead of the default find
-  # command for listing path candidates.
-  # - The first argument to the function ($1) is the base path to start traversal
-  # - See the source code (completion.{bash,zsh}) for the details.
-  _fzf_compgen_path() {
-    fd --hidden --follow --exclude ".git" . "$1"
-  }
-
-  # Use fd to generate the list for directory completion
-  _fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude ".git" . "$1"
-  }
-
-  # Advanced customization of fzf options via _fzf_comprun function
-  # - The first argument to the function is the name of the command.
-  # - You should make sure to pass the rest of the arguments to fzf.
-  _fzf_comprun() {
-    local command=$1
-    shift
-
-    case "$command" in
-      cd)           fzf --preview 'tree -C {} | head -200'   "$@" ;;
-      export|unset) fzf --preview "eval 'echo \$'{}"         "$@" ;;
-      ssh)          fzf --preview 'dig {}'                   "$@" ;;
-      *)            fzf --preview 'bat -n --color=always {}' "$@" ;;
-    esac
-  }
-
-  export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-  export FZF_CTRL_R_OPTS="
-    --preview 'echo {}' --preview-window up:3:hidden:wrap
-    --bind 'ctrl-/:toggle-preview'
-    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
-    --color header:italic
-    --header 'Press CTRL-Y to copy command into clipboard'"
-
-fi
-
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && source /opt/homebrew/etc/profile.d/autojump.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+ source <(fzf --zsh)
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
