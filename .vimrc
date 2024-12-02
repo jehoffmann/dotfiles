@@ -8,37 +8,67 @@ endif
 " Specify a directory for plugins
 call plug#begin('~/.vim/bundle')
 
+" Essential plugins
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ntpeters/vim-better-whitespace'
-
 Plug 'christoomey/vim-tmux-navigator'
-
+Plug 'ntpeters/vim-better-whitespace'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
-
 Plug 'terryma/vim-multiple-cursors'
-
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'nathanaelkane/vim-indent-guides'
+Plug 'ryanoasis/vim-devicons'
 
-Plug 'vim-syntastic/syntastic'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive' " Git integration
+Plug 'junegunn/gv.vim'   " Git commit browser
 
-Plug 'ekalinin/Dockerfile.vim', { 'on' : 'Dockerfile' }
+" Code navigation and IDE features
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'dense-analysis/ale'
+Plug 'junegunn/fzf.vim'
+Plug 'puremourning/vimspector'
+Plug 'tpope/vim-dispatch'
 
-Plug 'vhdirk/vim-cmake'
-Plug 'vim-scripts/c.vim', { 'on' : 'C' }
+" File explorer
+"Plug 'preservim/nerdtree'              " NERDTree plugin
+"Plug 'Xuyuanp/nerdtree-git-plugin'     " Git integration for NERDTree
 
-Plug 'tfnico/vim-gradle'
-Plug 'mikelue/vim-maven-plugin'
+" Plugins for C, C++ and low-level development
+Plug 'vim-scripts/c.vim'
+Plug 'bfrg/vim-cpp-modern'
+Plug 'rhysd/vim-clang-format'
 
-Plug 'rust-lang/rust.vim'
+" Rust-specific plugins
+Plug 'rust-lang/rust.vim'             " Rust syntax highlighting, formatting, and more
+Plug 'simrat39/rust-tools.nvim'       " Extra tools for Rust development
 
-Plug 'vim-ruby/vim-ruby'
+" Embedded/Kernel development plugins
+Plug 'jpalardy/vim-slime'
+
+" Python development plugins
+Plug 'psf/black'
+Plug 'nvie/vim-flake8'
+
+" Ruby
+Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 Plug 'tpope/vim-bundler'
 Plug 'thoughtbot/vim-rspec'
 
-Plug 'bogado/file-line'
+" Scripting language support
+Plug 'WolfgangMehner/bash-support', { 'for': 'sh' } " Enhanced Bash scripting
+Plug 'zsh-users/zsh-syntax-highlighting', { 'for': 'zsh' }
+
+Plug 'ekalinin/Dockerfile.vim', { 'for' : 'dockerfile' }
+
+" Build system plugins
+Plug 'vhdirk/vim-cmake', { 'for': 'cmake' }
+Plug 'tfnico/vim-gradle', { 'for': 'gradle' }
+Plug 'mikelue/vim-maven-plugin', { 'for': 'maven' }
+
+" Testing framework plugins
+Plug 'alepez/vim-gtest'
+Plug 'alfredodeza/pytest.vim'
 
 Plug 'rizzatti/dash.vim'
 
@@ -58,16 +88,6 @@ let g:tmuxline_powerline_separators = 0
 
 " Better whitespace config
 let g:show_spaces_that_precede_tabs=1
-
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
 
 " C Plugin
 let g:C_UseTool_cmake   = 'yes'
@@ -114,9 +134,36 @@ set softtabstop=4   " Sets the number of columns for a TAB
 
 set expandtab       " Expand TABs to spaces
 
-let g:rustfmt_autosave = 1
+" Enable CoC (Language Server Protocol)
+let g:coc_global_extensions = [
+      \ 'coc-clangd', 'coc-pyright', 'coc-json', 'coc-yaml',
+      \ 'coc-html', 'coc-xml', 'coc-java', 'coc-sh',
+      \ 'coc-rust-analyzer'
+      \ ]
+
+" ALE configuration
+let g:ale_linters_explicit = 1
+let g:ale_fix_on_save = 1
+
+" Rust-specific configuration
+autocmd FileType rust setlocal tabstop=4 shiftwidth=4 expandtab
+autocmd BufWritePre *.rs :RustFmt    " Automatically format with rustfmt
+let g:rustfmt_autosave = 1           " Enable autoformat on save
+
+" Key mappings for Rust tools
+nnoremap <Leader>rr :Dispatch cargo run<CR>
+nnoremap <Leader>rt :Dispatch cargo test<CR>
+nnoremap <Leader>rb :Dispatch cargo build<CR>
+nnoremap <Leader>rc :Dispatch cargo check<CR>
+
+" Autoformat on save
+autocmd BufWritePre *.c,*.cpp,*.h,*.hpp ClangFormat
+autocmd BufWritePre *.py Black
 
 "packadd! dracula_pro
 "colorscheme dracula_pro
+
+"nnoremap <C-n> :NERDTreeToggle<CR> " File explorer toggle
+"nnoremap <C-p> :CtrlP<CR>          " Fuzzy file finder
 
 set rtp+=/usr/local/opt/fzf
