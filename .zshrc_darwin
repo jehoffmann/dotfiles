@@ -5,21 +5,4 @@ fi
 #ADDED BY 010 EDITOR
 test -x "/Applications/010 Editor.app/Contents/CmdLine" && export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/jhoffmann/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/jhoffmann/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/jhoffmann/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/jhoffmann/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
-
 export SSH_AUTH_SOCK="$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock"

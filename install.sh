@@ -32,12 +32,12 @@ install .bashrc_${platform}
 install .editorconfig
 install .gitconfig
 install .gitignore
-install .tigrc
-install .tmux.conf
-install .vimrc
+#install .tigrc
+#install .tmux.conf
+#install .vimrc
 install .zshrc
 install .zshrc_${platform}
-install .p10k.zsh
+#install .p10k.zsh
 
 #echo "install bash-it"
 #git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it && ~/.bash_it/install.sh -n
@@ -56,9 +56,19 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 #    done
 #fi
 
+
+# lldb init
+mkdir -p ~/.lldb
+curl --output-dir .lldb -O https://raw.githubusercontent.com/gdbinit/lldbinit/refs/heads/master/lldbinit.py
+echo "command script import  ~.lldb/lldbinit.py" >>$HOME/.lldbinit
+
+#gdbinit
+curl https://raw.githubusercontent.com/gdbinit/Gdbinit/refs/heads/master/gdbinit -o ~/.gdbinit
+
+
 #git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 
 
 #echo "Install astronvim"
-git clone --depth=1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
-git clone git@github.com:jehoffmann/astronvim_config.git ~/.config/nvim/lua/user
+#git clone --depth=1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
+#git clone git@github.com:jehoffmann/astronvim_config.git ~/.config/nvim/lua/user

@@ -1,10 +1,3 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 ### Check OS ###
 platform='unknown'
 case $(uname) in
@@ -18,7 +11,7 @@ esac
 
 host=$(hostname -s)
 
-function gi() { curl -sLw n https://www.toptal.com/developers/gitignore/api/$@ ;}
+#function gi() { curl -sLw n https://www.toptal.com/developers/gitignore/api/$@ ;}
 
 # Returns whether the given command is executable or aliased.
 function _has() {
@@ -56,7 +49,8 @@ ZSH_TMUX_AUTOCONNECT=true
 
 # ssh config
 zstyle :omz:plugins:ssh-agent agent-forwarding on
-zstyle :omz:plugins:ssh-agent identities id_rsa
+zstyle :omz:plugins:ssh-agent identities id_air_jens.pub
+zstyle :omz:plugins:ssh-agent lazy yes
 
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
@@ -71,10 +65,7 @@ antigen bundle history
 antigen bundle sudo
 
 antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle chrissicool/zsh-256color
-
-antigen theme romkatv/powerlevel10k
-
+antigen bundle zsh-users/zsh-autosuggestions
 
 if [[ $platform == 'darwin' ]]; then
     antigen bundle macos
@@ -85,9 +76,8 @@ if [[ $platform == 'darwin' ]]; then
     antigen bundle xcode
 fi
 
-if _has docker; then
-  # https://github.com/ohmyzsh/ohmyzsh/issues/11817
-#  antigen bundle docker
+if _has asdf; then
+    antigen bundle asdf
 fi
 
 ################ Python ############
@@ -96,9 +86,9 @@ if _has python3; then
   antigen bundle pip
 
   alias python="python3"
-  alias pipu="pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip3 install -U"
 
   if _has virtualenv; then
+    antigen bundle virtualenv
     antigen bundle virtualenvwrapper
     export VIRTUALENVWRAPPER_PYTHON=$(whence python3)
     export VIRTUALENVWRAPPER_VIRTUALENV=$(whence virtualenv)
@@ -127,6 +117,9 @@ if [[ -d ${HOME}/.rbenv/bin ]]; then
     eval "$(rbenv init -)"
 fi
 
+antigen theme gallifrey
+#antigen bundle axieax/zsh-starship
+
 # Tell antigen that you're done.
 antigen apply
 
@@ -152,18 +145,13 @@ if _has btop; then
     alias top=btop
 fi
 
+if _has fzf; then
+  source <(fzf --zsh)
+fi
+
 # source platform specific rc
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
 [ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
 
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && source /opt/homebrew/etc/profile.d/autojump.sh
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
- source <(fzf --zsh)
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
