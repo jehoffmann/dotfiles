@@ -31,6 +31,20 @@ if command -v fd >/dev/null 2>&1; then
   alias find='fd'
 fi
 
+if command -v hexyl >/dev/null 2>&1; then
+  alias hex='hexyl'
+fi
+
+# -a: scan all sections (not just loaded), -n 8: reduce noise vs default of 4
+alias strings='strings -a -n 8'
+
+if command -v nmap >/dev/null 2>&1; then
+  alias nmap-ping='nmap -sn'               # host discovery, no port scan
+  alias nmap-quick='nmap -T4 -F'           # fast scan, top 100 ports
+  alias nmap-full='nmap -T4 -p- -sV'      # all 65535 ports + service detection
+  alias nmap-udp='sudo nmap -sU --top-ports 50'  # UDP top 50 (SNMP, TFTP, …)
+fi
+
 if command -v jq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
   jqrepl() {
     local content
