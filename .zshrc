@@ -9,10 +9,6 @@ case $(uname) in
     ;;
 esac
 
-host=$(hostname -s)
-
-#function gi() { curl -sLw n https://www.toptal.com/developers/gitignore/api/$@ ;}
-
 # Returns whether the given command is executable or aliased.
 function _has() {
   whence $1 >/dev/null 2>&1
@@ -116,7 +112,6 @@ if [[ -d ${HOME}/.rbenv/bin ]]; then
     eval "$(rbenv init -)"
 fi
 
-#antigen theme gallifrey
 antigen bundle axieax/zsh-starship
 
 # Tell antigen that you're done.

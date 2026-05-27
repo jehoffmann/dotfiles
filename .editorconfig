@@ -6,8 +6,29 @@ end_of_line = lf
 indent_style = space
 indent_size = 4
 tab_width = 4
+max_line_length = 120
 trim_trailing_whitespace = true
 insert_final_newline = true
 
 [Makefile]
 indent_style = tab
+
+# Assembly and linker scripts conventionally use tabs
+[*.{s,S,asm}]
+indent_style = tab
+
+[*.ld]
+indent_style = tab
+
+# Web / config formats use 2-space indent
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.{json,jsonc}]
+indent_size = 2
+
+[*.{js,ts,jsx,tsx}]
+indent_size = 2
+
+[*.toml]
+indent_size = 2

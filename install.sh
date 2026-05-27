@@ -66,6 +66,14 @@ git clone https://github.com/zsh-users/antigen.git ~/.antigen
 echo "Installing tmux plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
+if command -v bat >/dev/null 2>&1; then
+    echo "Installing bat catppuccin theme"
+    mkdir -p "$(bat --config-dir)/themes"
+    curl -Lo "$(bat --config-dir)/themes/Catppuccin Latte.tmTheme" \
+        "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme"
+    bat cache --build
+fi
+
 #pkgs = "git zsh nvim vim ripgrep bat eza fd fzf git-delta httpie thefuck"
 #if ${platform} == "Darwin" then
 #    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
