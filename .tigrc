@@ -243,6 +243,8 @@ bind diff	@	:/^@@			# Jump to next (c)hunk
 bind diff	[	:toggle diff-context -1
 bind diff	]	:toggle diff-context +1
 bind main	H	:goto HEAD
+bind main	V	!git log --show-signature -1 %(commit)
+bind diff	V	!git log --show-signature -1 %(commit)
 bind main	G	:toggle commit-title-graph # Toggle revision graph visualization
 bind main	F	:toggle commit-title-refs  # Toggle reference display (tags/branches)
 bind reflog	 F	:toggle commit-title-refs  # Toggle reference display (tags/branches)
@@ -425,6 +427,14 @@ color palette-12		white	default	bold
 color palette-13		red	default	bold
 color graph-commit		blue	default
 color search-result		black	yellow
+
+# Signature verification colors (git log --show-signature output)
+color "Good "			green	default	bold
+color "BAD "			red	default	bold
+color "gpg: Good"		green	default	bold
+color "gpg: BAD"		red	default	bold
+color "gpg: "			cyan	default
+color "error: "			red	default
 
 # Mappings for colors read from git configuration.
 # Set to "no" to disable.

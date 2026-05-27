@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 NOW=$(date +%s)
 
@@ -15,7 +15,20 @@ install() {
         exit 1
     fi
 
-    if [ -h "$DEST" ]; then # if $DEST is a symlink, we can probably delete it.
+    if [ -h "$DEST" ]; then
+        run rm "$DEST"
+    elif [ -e "$DEST" ]; then
+        run mv "$DEST" "$DEST.orig-$NOW"
+    fi
+    run ln -s "$SRC" "$DEST"
+}
+
+install_to() {
+    SRC="$PWD/$1"
+    DEST="$2"
+
+    mkdir -p "$(dirname "$DEST")"
+    if [ -h "$DEST" ]; then
         run rm "$DEST"
     elif [ -e "$DEST" ]; then
         run mv "$DEST" "$DEST.orig-$NOW"
@@ -27,14 +40,19 @@ shopt -s dotglob extglob
 
 platform=$(uname | tr "[:upper:]" "[:lower:]")
 
+install .aliases
+install .bash_profile
 install .bashrc
 install .bashrc_${platform}
 install .editorconfig
 install .gitconfig
 install .gitignore
-#install .tigrc
-#install .tmux.conf
-#install .vimrc
+install .tigrc
+install .tmux.conf
+install .vimrc
+install .ripgreprc
+install_to starship.toml "$HOME/.config/starship.toml"
+install_to bat/config "$HOME/.config/bat/config"
 install .zshrc
 install .zshrc_${platform}
 #install .p10k.zsh
@@ -59,8 +77,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # lldb init
 mkdir -p ~/.lldb
-curl --output-dir .lldb -O https://raw.githubusercontent.com/gdbinit/lldbinit/refs/heads/master/lldbinit.py
-echo "command script import  ~.lldb/lldbinit.py" >>$HOME/.lldbinit
+curl --output-dir ~/.lldb -O https://raw.githubusercontent.com/gdbinit/lldbinit/refs/heads/master/lldbinit.py
+echo "command script import ~/.lldb/lldbinit.py" >>$HOME/.lldbinit
 
 #gdbinit
 curl https://raw.githubusercontent.com/gdbinit/Gdbinit/refs/heads/master/gdbinit -o ~/.gdbinit

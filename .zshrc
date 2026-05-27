@@ -15,7 +15,7 @@ host=$(hostname -s)
 
 # Returns whether the given command is executable or aliased.
 function _has() {
-  return $(whence $1 >/dev/null)
+  whence $1 >/dev/null 2>&1
 }
 
 # Prepend a directory to path, if it exists and isn't already in the path.
@@ -39,18 +39,13 @@ _prepend_to_path $HOME/.local/bin
 
 ANTIGEN_HOME=$HOME/.antigen
 [ -f $ANTIGEN_HOME/antigen.zsh ] || git clone\
-      https://github.com/zsh-users/antigen.git $ANTIGEN_HOME
+    https://github.com/zsh-users/antigen.git $ANTIGEN_HOME
 
 # Antigen settings
 source ${HOME}/.antigen/antigen.zsh
 
 # tmux config
 ZSH_TMUX_AUTOCONNECT=true
-
-# ssh config
-zstyle :omz:plugins:ssh-agent agent-forwarding on
-zstyle :omz:plugins:ssh-agent identities id_air_jens.pub
-zstyle :omz:plugins:ssh-agent lazy yes
 
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
@@ -71,10 +66,19 @@ if [[ $platform == 'darwin' ]]; then
     antigen bundle macos
     antigen bundle copypath
     antigen bundle copyfile
-    antigen bundle terminalapp
     antigen bundle brew
     antigen bundle xcode
 fi
+
+# .zshrc — nur auf Linux
+if [[ $platform == 'linux' ]]; then
+    zstyle :omz:plugins:ssh-agent agent-forwarding on
+    zstyle :omz:plugins:ssh-agent identities id_air_jens
+    zstyle :omz:plugins:ssh-agent lazy yes
+    
+    antigen bundle ssh-agent
+fi
+
 
 if _has asdf; then
     antigen bundle asdf
@@ -82,26 +86,21 @@ fi
 
 ################ Python ############
 if _has python3; then
+  export PYTHON_VENV_NAME=".venv"
   antigen bundle python
-  antigen bundle pip
+  export PIP_REQUIRE_VIRTUALENV=true
+fi
 
-  alias python="python3"
-
-  if _has virtualenv; then
-    antigen bundle virtualenv
-    antigen bundle virtualenvwrapper
-    export VIRTUALENVWRAPPER_PYTHON=$(whence python3)
-    export VIRTUALENVWRAPPER_VIRTUALENV=$(whence virtualenv)
-  fi
-  export PIP_RESPECT_VIRTUALENV=true
+if _has uv; then
+  export UV_PYTHON_PREFERENCE=managed
 fi
 
 ################ Rust ################
 if [ -r $HOME/.cargo ]; then
-  _append_to_path ${CARGO_HOME}/bin
-
   export RUSTUP_HOME=$HOME/.rustup
   export CARGO_HOME=$HOME/.cargo
+
+  _append_to_path ${CARGO_HOME}/bin
 
   # Install rustup if it isn't installed already
   if ! [[ -s "${HOME}/.rustup" ]]; then
@@ -117,8 +116,8 @@ if [[ -d ${HOME}/.rbenv/bin ]]; then
     eval "$(rbenv init -)"
 fi
 
-antigen theme gallifrey
-#antigen bundle axieax/zsh-starship
+#antigen theme gallifrey
+antigen bundle axieax/zsh-starship
 
 # Tell antigen that you're done.
 antigen apply
@@ -133,25 +132,24 @@ else
     export EDITOR=vi
 fi
 
-if _has bat; then
-    alias cat='bat'
-fi
-
-if _has eza; then
-    alias ls='eza'
-fi
-
-if _has btop; then
-    alias top=btop
-fi
-
 if _has fzf; then
   source <(fzf --zsh)
+  if _has rg; then
+    export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git"'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  fi
+  if _has fd; then
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+  fi
+  # Ctrl+G for directory jump — avoids Option+N (tilde) conflict on German keyboard
+  bindkey '^G' fzf-cd-widget
 fi
 
 # source platform specific rc
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
-[ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
-[ -e "${HOME}/.zshrc_local" ] && source "${HOME}/.zshrc_local"
+[ -e "${HOME}/.aliases" ]         && source "${HOME}/.aliases"
+[ -e "${HOME}/.zsh_aliases" ]     && source "${HOME}/.zsh_aliases"
+[ -e "${HOME}/.zshrc_local" ]     && source "${HOME}/.zshrc_local"
 
-[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && source /opt/homebrew/etc/profile.d/autojump.sh
+_append_to_path "$HOME/.lmstudio/bin"
+

@@ -14,7 +14,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
-Plug 'terryma/vim-multiple-cursors'
+Plug 'mg979/vim-visual-multi'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ryanoasis/vim-devicons'
@@ -25,7 +25,6 @@ Plug 'junegunn/gv.vim'   " Git commit browser
 
 " Code navigation and IDE features
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf.vim'
 Plug 'puremourning/vimspector'
 Plug 'tpope/vim-dispatch'
@@ -41,7 +40,6 @@ Plug 'rhysd/vim-clang-format'
 
 " Rust-specific plugins
 Plug 'rust-lang/rust.vim'             " Rust syntax highlighting, formatting, and more
-Plug 'simrat39/rust-tools.nvim'       " Extra tools for Rust development
 
 " Embedded/Kernel development plugins
 Plug 'jpalardy/vim-slime'
@@ -70,7 +68,9 @@ Plug 'mikelue/vim-maven-plugin', { 'for': 'maven' }
 Plug 'alepez/vim-gtest'
 Plug 'alfredodeza/pytest.vim'
 
-Plug 'rizzatti/dash.vim'
+if has('mac')
+  Plug 'rizzatti/dash.vim'
+endif
 
 " Initialize plugin system
 call plug#end()
@@ -141,10 +141,6 @@ let g:coc_global_extensions = [
       \ 'coc-rust-analyzer'
       \ ]
 
-" ALE configuration
-let g:ale_linters_explicit = 1
-let g:ale_fix_on_save = 1
-
 " Rust-specific configuration
 autocmd FileType rust setlocal tabstop=4 shiftwidth=4 expandtab
 autocmd BufWritePre *.rs :RustFmt    " Automatically format with rustfmt
@@ -166,4 +162,8 @@ autocmd BufWritePre *.py Black
 "nnoremap <C-n> :NERDTreeToggle<CR> " File explorer toggle
 "nnoremap <C-p> :CtrlP<CR>          " Fuzzy file finder
 
-set rtp+=/usr/local/opt/fzf
+if !empty($HOMEBREW_PREFIX)
+  set rtp+=$HOMEBREW_PREFIX/opt/fzf
+elseif isdirectory($HOME . '/.fzf')
+  set rtp+=~/.fzf
+endif

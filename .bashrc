@@ -6,72 +6,79 @@ case $- in
     *) return;;
 esac
 
-# Path to the bash it configuration
+# History
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoreboth
+shopt -s histappend
+
+function _prepend_to_path() {
+  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+    PATH="$1:$PATH"
+  fi
+}
+
+function _append_to_path() {
+  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+    PATH="$PATH:$1"
+  fi
+}
+
+# Add common bin directories to path.
+_prepend_to_path /usr/local/bin
+_prepend_to_path /usr/local/sbin
+_prepend_to_path "$HOME/.local/bin"
+
+################ Rust ################
+if [ -r "$HOME/.cargo" ]; then
+  export RUSTUP_HOME="$HOME/.rustup"
+  export CARGO_HOME="$HOME/.cargo"
+  [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
+fi
+
+################ Ruby ################
+if [[ -d "${HOME}/.rbenv/bin" ]]; then
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+fi
+
+# Load Bash It (only if installed)
 export BASH_IT="${HOME}/.bash_it"
+[ -f "$BASH_IT/bash_it.sh" ] && source "$BASH_IT/bash_it.sh"
 
-# Lock and Load a custom theme file.
-# Leave empty to disable theming.
-# location /.bash_it/themes/
-export BASH_IT_THEME='gallifrey'
+# Prompt via starship
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init bash)"
+fi
 
-# (Advanced): Change this to the name of your remote repo if you
-# cloned bash-it with a remote other than origin such as `bash-it`.
-# export BASH_IT_REMOTE='bash-it'
-
-# Your place for hosting Git repos. I use this for private repos.
-export GIT_HOSTING='git@git.domain.com'
-
-# Don't check mail when opening terminal.
-unset MAILCHECK
-
-# Change this to your console based IRC client of choice.
-export IRC_CLIENT='irssi'
-
-# Set this to the command you use for todo.txt-cli
-export TODO="t"
-
-# Set this to false to turn off version control status checking within the prompt for all themes
-export SCM_CHECK=true
-# Set to actual location of gitstatus directory if installed
-#export SCM_GIT_GITSTATUS_DIR="$HOME/gitstatus"
-# per default gitstatus uses 2 times as many threads as CPU cores, you can change this here if you must
-#export GITSTATUS_NUM_THREADS=8
-
-# Set Xterm/screen/Tmux title with only a short hostname.
-# Uncomment this (or set SHORT_HOSTNAME to something else),
-# Will otherwise fall back on $HOSTNAME.
-#export SHORT_HOSTNAME=$(hostname -s)
-
-# Set Xterm/screen/Tmux title with only a short username.
-# Uncomment this (or set SHORT_USER to something else),
-# Will otherwise fall back on $USER.
-#export SHORT_USER=${USER:0:8}
-
-# Set Xterm/screen/Tmux title with shortened command and directory.
-# Uncomment this to set.
-#export SHORT_TERM_LINE=true
-
-# Set vcprompt executable path for scm advance info in prompt (demula theme)
-# https://github.com/djl/vcprompt
-#export VCPROMPT_EXECUTABLE=~/.vcprompt/bin/vcprompt
-
-# (Advanced): Uncomment this to make Bash-it reload itself automatically
-# after enabling or disabling aliases, plugins, and completions.
-# export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
-
-# Uncomment this to make Bash-it create alias reload.
-# export BASH_IT_RELOAD_LEGACY=1
-
-# Load Bash It
-source "$BASH_IT"/bash_it.sh
-
-# source platform specific rc
-platform=$(uname |tr "[:upper:]" "[:lower:]")
+# Source platform-specific and local rc
+platform=$(uname | tr "[:upper:]" "[:lower:]")
 [ -e "${HOME}/.bashrc_${platform}" ] && source "${HOME}/.bashrc_${platform}"
-[ -e "${HOME}/.bashrc_local" ] && source "${HOME}/.bashrc_local"
+[ -e "${HOME}/.aliases" ]            && source "${HOME}/.aliases"
+[ -e "${HOME}/.bash_aliases" ]       && source "${HOME}/.bash_aliases"
+[ -e "${HOME}/.bashrc_local" ]       && source "${HOME}/.bashrc_local"
 
-[ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
-[ -d $HOME/.cargo/env ] && source $HOME/.cargo/env
+if command -v rg >/dev/null 2>&1; then
+  export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+fi
 
- [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
-. "$HOME/.cargo/env"
+if command -v vim >/dev/null 2>&1; then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --bash)
+  if command -v rg >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git"'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  fi
+  if command -v fd >/dev/null 2>&1; then
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+  fi
+  # Ctrl+G for directory jump — avoids Option+N (tilde) conflict on German keyboard
+  bind -x '"\C-g": __fzf_cd__'
+fi
+
+_append_to_path "$HOME/.lmstudio/bin"

@@ -1,0 +1,28 @@
+# Groß-/Kleinschreibung ignorieren, außer das Pattern enthält Großbuchstaben
+--smart-case
+
+# Versteckte Dateien durchsuchen (.github, .env.example, etc.)
+--hidden
+
+# .git immer ausschließen (nötig wegen --hidden)
+--glob=!.git/
+
+# Symlinks folgen
+--follow
+
+# Lange Zeilen kürzen statt alles auszugeben (z.B. minifizierte Files)
+--max-columns=150
+--max-columns-preview
+
+# Build-Artefakte und generierte Dateien überspringen
+--glob=!node_modules/
+--glob=!target/
+--glob=!dist/
+--glob=!build/
+--glob=!__pycache__/
+--glob=!*.pyc
+--glob=!*.o
+--glob=!*.a
+--glob=!*.so
+--glob=!*.min.js
+--glob=!*.min.css

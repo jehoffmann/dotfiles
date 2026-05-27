@@ -33,7 +33,7 @@
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     excludesfile = ~/.gitignore
     editor = vim
-    pager = delta --dark
+    pager = sh -c 'command -v delta >/dev/null 2>&1 && exec delta || exec less -FRX'
 
 [delta]
     features = zebra-dark
@@ -59,6 +59,12 @@
     css = commit --signoff --gpg-sign
     cso = commit --signoff
     cs = commit --gpg-sign
+    dbc  = difftool -d --no-symlinks --tool=bc
+    dbcf = difftool --tool=bc --prompt
+    dvs  = difftool --tool=vscode --prompt
+    mbc  = mergetool --tool=bc
+    mvs  = mergetool --tool=vscode
+    lols = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset %C(bold cyan)[%G?]%Creset' --abbrev-commit
 
 [merge]
     summary = true
@@ -76,8 +82,14 @@
 [difftool "bc"]
 	trustExitCode = true
 
+[difftool "vscode"]
+	cmd = code --wait --diff "$LOCAL" "$REMOTE"
+
 [mergetool "bc"]
 	trustExitCode = true
+
+[mergetool "vscode"]
+	cmd = code --wait "$MERGED"
 
 [color]
 	ui = auto

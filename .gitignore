@@ -967,3 +967,5 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/c,vim,c++,java,ruby,cmake,linux,xcode,macos,maven,gradle,packer,python,windows,vagrant,eclipse,autotools,clion+all,virtualenv,pycharm+all,sublimetext,intellij+all,rubymine+all,androidstudio,visualstudiocode
+
+**/.claude/settings.local.json

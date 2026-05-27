@@ -1,0 +1,43 @@
+# Shared aliases — sourced by both bash and zsh
+
+if command -v python3 >/dev/null 2>&1; then
+  alias python='python3'
+fi
+
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat'
+fi
+
+if command -v eza >/dev/null 2>&1; then
+  alias ls='eza'
+  alias ll='eza -la --icons --git'
+  alias la='eza -a --icons'
+  alias lt='eza --tree --icons --level=2'
+fi
+
+if command -v btop >/dev/null 2>&1; then
+  alias top='btop'
+fi
+
+if command -v lazygit >/dev/null 2>&1; then
+  alias lg='lazygit'
+fi
+
+if command -v procs >/dev/null 2>&1; then
+  alias ps='procs'
+fi
+
+if command -v fd >/dev/null 2>&1; then
+  alias find='fd'
+fi
+
+if command -v jq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  jqrepl() {
+    local content
+    content=$(cat "${1:--}")
+    echo '' | fzf --phony --query '.' \
+      --print-query \
+      --preview "echo \$content | jq -C {q} 2>&1" \
+      --preview-window=up:90%
+  }
+fi

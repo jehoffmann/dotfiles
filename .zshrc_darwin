@@ -1,8 +1,11 @@
 if [[ -z $(which brew) ]]; then
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 #ADDED BY 010 EDITOR
 test -x "/Applications/010 Editor.app/Contents/CmdLine" && export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
 
-export SSH_AUTH_SOCK="$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock"
+[[ -S "$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock" ]] && \
+  export SSH_AUTH_SOCK="$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock"
+
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && source /opt/homebrew/etc/profile.d/autojump.sh

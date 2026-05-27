@@ -1,0 +1,16 @@
+# bat configuration
+# Theme: install catppuccin via https://github.com/catppuccin/bat
+#   mkdir -p "$(bat --config-dir)/themes"
+#   curl -Lo "$(bat --config-dir)/themes/Catppuccin Latte.tmTheme" \
+#     https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme
+#   bat cache --build
+--theme="Catppuccin Latte"
+
+--italic-text=always
+
+# Syntax hints for dotfiles bat doesn't recognise
+--map-syntax ".aliases:Bourne Again Shell (bash)"
+--map-syntax ".zshrc*:Bourne Again Shell (bash)"
+--map-syntax ".bashrc*:Bourne Again Shell (bash)"
+--map-syntax ".zshrc_*:Bourne Again Shell (bash)"
+--map-syntax ".bashrc_*:Bourne Again Shell (bash)"
