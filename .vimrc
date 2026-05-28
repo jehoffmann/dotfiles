@@ -22,6 +22,7 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " ── Navigation & Search ──────────────────────────────────────────────────────
 Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'ludovicchabant/vim-gutentags'       " auto ctags/cscope for large trees
 
 " ── Editing ──────────────────────────────────────────────────────────────────
 Plug 'tpope/vim-surround'
@@ -40,11 +41,16 @@ Plug 'junegunn/gv.vim'
 " ── Build / Dispatch ─────────────────────────────────────────────────────────
 Plug 'tpope/vim-dispatch'
 
-" ── C / C++ / Embedded ───────────────────────────────────────────────────────
+" ── C / C++ / Embedded / Kernel ─────────────────────────────────────────────
 Plug 'vim-scripts/c.vim'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'rhysd/vim-clang-format'
 Plug 'jpalardy/vim-slime'
+Plug 'vivien/vim-linux-coding-style'      " kernel style (tabs, 8-width) per tree
+
+" ── Android / AOSP ──────────────────────────────────────────────────────────
+Plug 'udalov/kotlin-vim'                  " Kotlin syntax highlighting
+Plug 'google/vim-starlark'                " Android.bp / BUILD syntax
 
 " ── Go ───────────────────────────────────────────────────────────────────────
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
@@ -168,7 +174,7 @@ command! -bang -nargs=* Rg
 let g:coc_global_extensions = [
       \ 'coc-clangd', 'coc-pyright', 'coc-rust-analyzer', 'coc-go',
       \ 'coc-json', 'coc-yaml', 'coc-html', 'coc-xml',
-      \ 'coc-java', 'coc-sh',
+      \ 'coc-java', 'coc-kotlin', 'coc-sh',
       \ 'coc-explorer'
       \ ]
 
@@ -221,7 +227,14 @@ nnoremap <leader>f :call CocAction('format')<CR>
 let g:C_UseTool_cmake   = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-autocmd BufWritePre *.c,*.cpp,*.h,*.hpp ClangFormat
+" Skip auto-format in kernel/AOSP trees — they have per-module style configs
+function! ClangFormatIfNotKernel() abort
+  if expand('%:p') =~# '\v/(linux|kernel|aosp)/'
+    return
+  endif
+  ClangFormat
+endfunction
+autocmd BufWritePre *.c,*.cpp,*.h,*.hpp call ClangFormatIfNotKernel()
 
 
 " ══════════════════════════════════════════════════════════════════════════════
@@ -256,3 +269,72 @@ nnoremap <Leader>rc :Dispatch cargo check<CR>
 " ══════════════════════════════════════════════════════════════════════════════
 
 autocmd BufWritePre *.py Black
+
+
+" ══════════════════════════════════════════════════════════════════════════════
+" Linux Kernel Development
+" ══════════════════════════════════════════════════════════════════════════════
+
+" vim-linux-coding-style auto-applies kernel style (8-space tabs, no expandtab)
+" when a file is inside a kernel tree (detected by Kconfig/MAINTAINERS).
+" Override patterns if your tree lives under a non-standard path.
+let g:linuxsty_patterns = [ '/linux', '/kernel', '/aosp' ]
+
+" cscope — cross-reference navigation across macro boundaries
+" (clangd alone can't resolve DEFINE_PER_CPU and similar macro-heavy symbols)
+if has('cscope')
+  set cscopetag     " use cscope for Ctrl+] and :tag
+  set csto=0        " search cscope before ctags
+
+  if filereadable('cscope.out')
+    silent cs add cscope.out
+  elseif !empty($CSCOPE_DB)
+    silent cs add $CSCOPE_DB
+  endif
+
+  " s: find symbol    c: find callers    i: find #includes    t: find text
+  nmap <leader>ks :cs find s <C-R>=expand('<cword>')<CR><CR>
+  nmap <leader>kc :cs find c <C-R>=expand('<cword>')<CR><CR>
+  nmap <leader>ki :cs find i <C-R>=expand('<cfile>')<CR><CR>
+  nmap <leader>kt :cs find t <C-R>=expand('<cword>')<CR><CR>
+endif
+
+" Kernel build dispatch  (set ARCH/CROSS_COMPILE per project in .vimspector.json)
+nnoremap <leader>km :Dispatch make -j$(nproc)<CR>
+nnoremap <leader>kM :Dispatch make -j$(nproc) modules<CR>
+
+
+" ══════════════════════════════════════════════════════════════════════════════
+" Android / AOSP
+" ══════════════════════════════════════════════════════════════════════════════
+
+" Filetype mappings for AOSP-specific file formats
+augroup aosp_filetypes
+  au!
+  " Android.bp uses Starlark (Python superset) — handled by vim-starlark
+  au BufRead,BufNewFile Android.bp   setfiletype starlark
+  " Android.mk is standard Makefile syntax
+  au BufRead,BufNewFile Android.mk   setfiletype make
+  " AIDL and HIDL use Java/C-like syntax
+  au BufRead,BufNewFile *.aidl       setfiletype java
+  au BufRead,BufNewFile *.hal        setfiletype c
+augroup END
+
+" clang-format is suppressed for AOSP/kernel paths by ClangFormatIfNotKernel()
+" Place a .clang-format file in individual AOSP module roots as needed.
+
+
+" ══════════════════════════════════════════════════════════════════════════════
+" Large Codebase Navigation  (gutentags)
+" ══════════════════════════════════════════════════════════════════════════════
+
+" gutentags rebuilds ctags/cscope incrementally in the background.
+" Essential for kernel and AOSP trees where clangd symbol search is slow.
+let g:gutentags_modules            = ['ctags', 'cscope']
+let g:gutentags_project_root       = ['.git', 'Makefile', 'CMakeLists.txt', 'Android.bp', 'Kconfig']
+let g:gutentags_cache_dir          = expand('~/.cache/gutentags')
+let g:gutentags_generate_on_new    = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_write  = 1
+" Exclude generated output dirs common in kernel/AOSP builds
+let g:gutentags_ctags_exclude      = ['out', '.repo', '*.json', '*.xml', 'Documentation']
