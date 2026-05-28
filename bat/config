@@ -6,6 +6,9 @@
 #   bat cache --build
 --theme="Catppuccin Latte"
 
+# Behave like cat — no pager, output streams directly
+--paging=never
+
 --italic-text=always
 
 # Syntax hints for dotfiles bat doesn't recognise

@@ -53,6 +53,7 @@ install .vimrc
 install .ripgreprc
 install_to starship.toml "$HOME/.config/starship.toml"
 install_to bat/config "$HOME/.config/bat/config"
+install_to procs/config.toml "$HOME/.config/procs/config.toml"
 install .zshrc
 install .zshrc_${platform}
 #install .p10k.zsh
