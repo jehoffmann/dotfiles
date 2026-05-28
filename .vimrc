@@ -98,6 +98,9 @@ set ruler
 set background=dark
 set backspace=eol,start,indent
 set colorcolumn=80,120
+set mouse=a
+set ttimeoutlen=10   " match tmux escape-time; prevents ESC lag in insert mode
+set termguicolors    " enable true color (requires tmux terminal-overrides Tc)
 
 set tabstop=4
 set shiftwidth=4
@@ -132,9 +135,8 @@ let g:show_spaces_that_precede_tabs = 1
 let g:airline_theme = 'dark'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#tmuxline#enabled = 1
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
-let g:tmuxline_powerline_separators = 0
+" tmux statusbar is managed by tmux-themepack, not tmuxline
 
 
 " ══════════════════════════════════════════════════════════════════════════════
