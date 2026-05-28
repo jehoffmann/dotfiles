@@ -3,8 +3,8 @@
 format = """
 [](red)\
 $os\
-$username\
 $shell\
+$username\
 [](bg:peach fg:red)\
 $directory\
 [](bg:yellow fg:peach)\

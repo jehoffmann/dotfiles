@@ -55,3 +55,15 @@ if command -v jq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
       --preview-window=up:90%
   }
 fi
+
+### SSH #######################################################################
+alias ssh-pw='ssh -o PreferredAuthentications=password -o PasswordAuthentication=yes'
+# Multiplexing — Kontrolle über laufende Master-Verbindungen
+alias ssh-check='ssh -O check'      # ssh-check pm-coder → ist Master aktiv?
+alias ssh-exit='ssh -O exit'        # ssh-exit pm-coder  → Master sauber beenden
+alias ssh-stop='ssh -O stop'        # ssh-stop pm-coder  → keine neuen Verbindungen, bestehende laufen aus
+alias ssh-mux='ls ~/.ssh/sockets/'  # alle aktiven Master-Sockets auflisten
+alias ssh-killall='rm -f ~/.ssh/sockets/*'  # alle Master-Sockets hart abbrechen
+
+# Agent
+alias ssh-keys='ssh-add -l'         # welche Keys sind im Agent geladen?
