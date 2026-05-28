@@ -50,7 +50,7 @@ Plug 'vivien/vim-linux-coding-style'      " kernel style (tabs, 8-width) per tre
 
 " ── Android / AOSP ──────────────────────────────────────────────────────────
 Plug 'udalov/kotlin-vim'                  " Kotlin syntax highlighting
-Plug 'google/vim-starlark'                " Android.bp / BUILD syntax
+Plug 'cappyzawa/starlark.vim'             " Android.bp / BUILD syntax
 
 " ── Go ───────────────────────────────────────────────────────────────────────
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
