@@ -231,10 +231,8 @@ link_all() {
     link config/shell/env.sh           "$XDG_CONFIG/shell/env.sh"
     link config/coc/coc-settings.json  "$XDG_CONFIG/coc/coc-settings.json"
 
-    # tmux: XDG config; fragments for newer tmux versions are sourced conditionally
-    for f in tmux.conf tmux-3.2.conf tmux-3.3.conf tmux-3.4.conf; do
-        link "config/tmux/$f" "$XDG_CONFIG/tmux/$f"
-    done
+    # tmux: XDG config (version differences are handled inside via %if)
+    link config/tmux/tmux.conf "$XDG_CONFIG/tmux/tmux.conf"
     # tmux < 3.1 does not read ~/.config/tmux/tmux.conf
     if has tmux && ! version_ge "$(tool_version tmux -V)" 3.1; then
         link config/tmux/tmux.conf "$HOME/.tmux.conf"

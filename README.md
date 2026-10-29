@@ -85,7 +85,7 @@ directories wherever the tool supports them.
 | `.aliases` (shared by zsh and bash) | `~/` |
 | `.gitconfig`, `.gitignore`, `.tigrc`, `.vimrc`, `.ripgreprc`, `.editorconfig` | `~/` |
 | `config/shell/env.sh` | `~/.config/shell/env.sh` |
-| `config/tmux/*.conf` | `~/.config/tmux/` (plugins in `~/.config/tmux/plugins`) |
+| `config/tmux/tmux.conf` | `~/.config/tmux/tmux.conf` (plugins in `~/.config/tmux/plugins`) |
 | `config/mise/config.toml`, `config/mise/conf.d/20-dev.toml` | `~/.config/mise/` |
 | `config/git/compat-*.gitconfig` | `~/.config/git/` (only where git is new enough) |
 | `config/coc/coc-settings.json` | `~/.config/coc/` |
@@ -166,10 +166,10 @@ to the machine and not part of the repository.
   (automatic restore), tmux-yank.
 - TPM bootstraps itself and installs missing plugins on every start, including
   plugins newly added to the configuration.
-- Features of newer tmux versions are kept in separate files and only sourced
-  where supported: `tmux-3.2.conf` (true colour, extended keys),
-  `tmux-3.3.conf` (passthrough), `tmux-3.4.conf` (hyperlinks). Older versions
-  get `Tc` for true colour. tmux < 3.1 (Ubuntu 20.04) does not read
+- Features of newer tmux versions sit in `%if "#{>=:#{version},…}"` blocks
+  of the same file: true colour and extended keys (3.2), passthrough (3.3),
+  hyperlinks (3.4); older versions get `Tc` for true colour. tmux < 3.1
+  (Ubuntu 20.04) does not read
   `~/.config/tmux`, so the installer additionally links `~/.tmux.conf`.
 - `set-clipboard on`: copying inside tmux reaches the local clipboard even over
   SSH, provided the local terminal supports OSC 52 (Ghostty, iTerm2, kitty,
