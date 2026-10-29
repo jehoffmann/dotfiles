@@ -178,6 +178,10 @@ Runtime data also follows XDG: `RUSTUP_HOME`, `CARGO_HOME` and `GOPATH` live in
   so GUI apps and IDEs launched from the Dock see the runtimes. On Linux
   desktops `environment.d` does the same for the graphical session.
 - **zoxide** replaces autojump: `z proj`, `zi` for an fzf picker.
+- **fzf-tab**: Tab completion opens an fzf menu (fuzzy filter, preview) for
+  files, git subcommands and branches, `kill`, `ssh` hosts, …
+- **zsh-you-should-use** points out existing aliases when you type the long
+  form (`git status` → `gst`); the bare `g` alias is ignored.
 - **fzf**: `Ctrl-T` files, `Ctrl-R` history, `Ctrl-G` directory jump (instead of
   `Alt-C`, which clashes with the German keyboard layout on macOS). fzf ≥ 0.48
   provides the shell integration; older distro versions fall back to the

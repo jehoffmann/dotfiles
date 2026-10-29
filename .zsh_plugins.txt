@@ -12,10 +12,7 @@ zsh-users/zsh-completions path:src kind:fpath
 # OMZ plugins (everywhere)
 ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/tmux              conditional:has_tmux
-ohmyzsh/ohmyzsh path:plugins/vscode
 ohmyzsh/ohmyzsh path:plugins/command-not-found
-ohmyzsh/ohmyzsh path:plugins/common-aliases
-ohmyzsh/ohmyzsh path:plugins/history
 ohmyzsh/ohmyzsh path:plugins/sudo
 ohmyzsh/ohmyzsh path:plugins/python            conditional:has_python
 
@@ -28,6 +25,12 @@ ohmyzsh/ohmyzsh path:plugins/xcode             conditional:is_macos
 
 # Linux
 ohmyzsh/ohmyzsh path:plugins/ssh-agent         conditional:has_ssh_agent_linux
+
+# Reminds you when a typed command has an alias
+MichaelAquilina/zsh-you-should-use
+
+# fzf as the completion menu – after compinit setup, before plugins that wrap widgets
+Aloxaf/fzf-tab
 
 # These two last (syntax-highlighting must be the very last)
 zsh-users/zsh-autosuggestions

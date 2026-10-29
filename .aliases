@@ -1,5 +1,8 @@
 # Shared aliases — sourced by both bash and zsh
 
+# zsh-you-should-use: don't suggest the bare `g` (= git) for every git command
+YSU_IGNORED_ALIASES=("g")
+
 if command -v python3 >/dev/null 2>&1; then
   alias python='python3'
 fi
