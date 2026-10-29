@@ -1,0 +1,16 @@
+# ~/.gitconfig_user – machine-specific git settings, NOT part of the repo.
+# Created by install.sh from config/git/gitconfig_user.template. Edit freely;
+# only the block between the "dotfiles" markers at the end is rewritten by
+# install.sh (version-dependent options for the git installed here).
+
+[user]
+    name = @NAME@
+    email = @EMAIL@
+    # Public key for SSH commit signing (gpg.format = ssh, see managed block)
+    @SIGNINGKEY@
+
+# Sign every commit (otherwise use the aliases `git cs` / `git css`)
+#[commit]
+#    gpgsign = true
+#[tag]
+#    gpgsign = true

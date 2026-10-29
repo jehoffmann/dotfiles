@@ -207,6 +207,64 @@ fi
 ########## Symlinks ##########
 [ "$DOTFILES" = "$HOME" ] && { echo "repo must not be \$HOME" >&2; exit 1; }
 
+# ~/.gitconfig_user: created once from the template (asks for identity and
+# signing key when run interactively), then only the managed block at its end
+# is rewritten to match the installed git version.
+git_user_config() {
+    local f="$HOME/.gitconfig_user" gv name email key keyfile tmp line
+    gv=$(tool_version git --version)
+
+    if [ ! -e "$f" ]; then
+        name=${DOTFILES_GIT_NAME:-}; email=${DOTFILES_GIT_EMAIL:-}; key=${DOTFILES_GIT_SIGNINGKEY:-}
+        local defkey=""
+        for keyfile in "$HOME"/.ssh/*.pub; do [ -e "$keyfile" ] && { defkey=$keyfile; break; }; done
+        if [ -t 0 ]; then
+            echo "== creating $f"
+            [ -n "$name" ]  || read -r -p "   git user.name: " name
+            [ -n "$email" ] || read -r -p "   git user.email: " email
+            [ -n "$key" ]   || { read -r -p "   SSH public key for signing [${defkey:-none}]: " key; key=${key:-$defkey}; }
+        fi
+        key=${key/#\~/$HOME}
+        local l_name="    # name = (set me)" l_email="    # email = (set me)" l_key="    # signingkey = ~/.ssh/id_ed25519.pub"
+        [ -n "$name" ]  && l_name="    name = $name"
+        [ -n "$email" ] && l_email="    email = $email"
+        case "$key" in
+            "$HOME"/*) l_key="    signingkey = ~${key#"$HOME"}" ;;
+            ?*)        l_key="    signingkey = $key" ;;
+        esac
+        sed -e "s|^    name = @NAME@|$l_name|" -e "s|^    email = @EMAIL@|$l_email|" \
+            -e "s|^    @SIGNINGKEY@|$l_key|" \
+            "$DOTFILES/config/git/gitconfig_user.template" >"$f"
+        [ -n "$name" ] && [ -n "$email" ] || warn "set user.name/user.email in $f"
+        # allowed_signers lets git verify your own SSH signatures
+        if [ -n "$key" ] && [ -n "$email" ] && [ -r "$key" ]; then
+            line="$email $(cut -d' ' -f1,2 "$key")"
+            grep -qsF "$line" "$HOME/.ssh/allowed_signers" || echo "$line" >>"$HOME/.ssh/allowed_signers"
+        fi
+    fi
+
+    # rewrite the managed block (drop the old one and trailing blank lines)
+    tmp=$(mktemp)
+    awk '/^# >>> dotfiles/{skip=1} !skip{l[++n]=$0} /^# <<< dotfiles/{skip=0}
+         END{while (n>0 && l[n]=="") n--; for (i=1;i<=n;i++) print l[i]}' "$f" >"$tmp"
+    {
+        cat "$tmp"
+        echo
+        echo "# >>> dotfiles: managed by install.sh for git $gv – edits inside are overwritten >>>"
+        if version_ge "$gv" 2.34; then
+            printf '[help]\n    autocorrect = prompt\n'
+            printf '[gpg]\n    format = ssh\n[gpg "ssh"]\n    allowedSignersFile = ~/.ssh/allowed_signers\n'
+        else
+            echo "# git < 2.34: no SSH signing, no autocorrect=prompt"
+        fi
+        if version_ge "$gv" 2.35; then
+            printf '[merge]\n    conflictstyle = zdiff3\n'
+        fi
+        echo "# <<< dotfiles <<<"
+    } >"$f"
+    rm -f "$tmp"
+}
+
 link_all() {
     # ~/.ssh is expected by the OMZ ssh-agent plugin and the ssh multiplexing aliases
     mkdir -p "$HOME/.ssh/sockets" && chmod 700 "$HOME/.ssh"
@@ -240,17 +298,8 @@ link_all() {
         run rm "$HOME/.tmux.conf"       # would shadow the XDG config
     fi
 
-    # git: options that older git versions reject live in version-gated includes
-    if has git; then
-        local gv; gv=$(tool_version git --version)
-        for v in 2.34 2.35; do
-            if version_ge "$gv" "$v"; then
-                link "config/git/compat-$v.gitconfig" "$XDG_CONFIG/git/compat-$v.gitconfig"
-            elif [ -L "$XDG_CONFIG/git/compat-$v.gitconfig" ]; then
-                run rm "$XDG_CONFIG/git/compat-$v.gitconfig"
-            fi
-        done
-    fi
+    # git: identity, signing key and version-dependent options
+    has git && git_user_config
 
     # mise: settings always, language runtimes only on desktops
     link config/mise/config.toml "$XDG_CONFIG/mise/config.toml"

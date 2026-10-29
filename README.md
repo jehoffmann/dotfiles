@@ -87,7 +87,7 @@ directories wherever the tool supports them.
 | `config/shell/env.sh` | `~/.config/shell/env.sh` |
 | `config/tmux/tmux.conf` | `~/.config/tmux/tmux.conf` (plugins in `~/.config/tmux/plugins`) |
 | `config/mise/config.toml`, `config/mise/conf.d/20-dev.toml` | `~/.config/mise/` |
-| `config/git/compat-*.gitconfig` | `~/.config/git/` (only where git is new enough) |
+| `config/git/gitconfig_user.template` | copied once to `~/.gitconfig_user` (not a link, see [Git](#git)) |
 | `config/coc/coc-settings.json` | `~/.config/coc/` |
 | `config/gdb/gdbinit` | `~/.config/gdb/gdbinit` |
 | `config/lldb/lldbinit`, `lldbinit.py` | `~/.config/lldb/`, plus `~/.lldbinit` (lldb has no XDG support) |
@@ -104,7 +104,7 @@ Runtime data also follows XDG: `RUSTUP_HOME`, `CARGO_HOME` and `GOPATH` live in
 | File | Purpose |
 |---|---|
 | `~/.zshrc_local`, `~/.bashrc_local`, `~/.zsh_aliases`, `~/.bash_aliases` | per-machine shell additions, sourced last |
-| `~/.gitconfig_user` | `user.name`, `user.email`, `user.signingkey` |
+| `~/.gitconfig_user` | identity, signing key, version-dependent git options (created from the template) |
 | `~/.config/mise/conf.d/90-local.toml` | generated: tools missing from the distro packages |
 | `~/.config/dotfiles/profile` | chosen profile |
 | `~/.local/share/dracula-pro/` | licensed Dracula PRO package and its generated overrides |
@@ -196,14 +196,26 @@ to the machine and not part of the repository.
 - Rebase on pull, autostash, autosquash, `rerere`, histogram diffs, moved-line
   colouring, branches sorted by recent commits, `push.autoSetupRemote`.
 - Pager is delta when installed, otherwise `less`.
-- Options that older git versions reject are kept in version-gated includes,
-  linked only where supported:
-  - `config/git/compat-2.34.gitconfig`: SSH commit signing (`gpg.format = ssh`),
+- Machine-specific settings live in `~/.gitconfig_user`, included at the end
+  of `.gitconfig` so they override the defaults. The installer creates it once
+  from `config/git/gitconfig_user.template`: interactively it asks for name,
+  e-mail and the SSH public key used for signing (default: the first
+  `~/.ssh/*.pub`), otherwise it takes `DOTFILES_GIT_NAME`,
+  `DOTFILES_GIT_EMAIL` and `DOTFILES_GIT_SIGNINGKEY` or leaves commented
+  placeholders. With a key and e-mail it also adds an entry to
+  `~/.ssh/allowed_signers`, so `git log --show-signature` verifies your commits.
+- At its end the file has a block between `# >>> dotfiles` markers that the
+  installer rewrites on every run for the installed git version – options
+  older git rejects (git 2.25 on Ubuntu 20.04 aborts on them):
+  - git ≥ 2.34: SSH signing (`gpg.format = ssh`, `allowedSignersFile`),
     `help.autocorrect = prompt`
-  - `config/git/compat-2.35.gitconfig`: `merge.conflictstyle = zdiff3`
-  Missing include files are ignored by git, so Ubuntu 20.04 (git 2.25) works.
-- Identity and signing key live in `~/.gitconfig_user`; repositories under
-  `~/Developer/work/` additionally include `~/Developer/work/.gitconfig`.
+  - git ≥ 2.35: `merge.conflictstyle = zdiff3` (otherwise `diff3`)
+
+  Everything outside the block is yours and never touched again.
+- Repositories under `~/Developer/work/` additionally include
+  `~/Developer/work/.gitconfig`.
+- Signing is per command (`git cs`, `git css`) unless you enable
+  `commit.gpgsign` in `~/.gitconfig_user`.
 
 ### Debugging and reverse engineering
 
@@ -302,7 +314,8 @@ Only these fixed paths below `$HOME` are ever touched.
 | tmux looks like the default (green bar) | Plugins missing: start tmux once more or press `prefix I`. Check `~/.config/tmux/plugins`. |
 | tmux ignores the configuration | Check `tmux -V`; below 3.1 `~/.tmux.conf` must link to `config/tmux/tmux.conf` (`./install.sh --links`). |
 | `less` warns "terminal is not fully functional" in tmux | Missing `tmux-256color` terminfo: `infocmp -x tmux-256color \| tic -x -` (macOS), or install `ncurses-term` / `ncurses-terminfo`. |
-| `git` complains about `zdiff3`, `autocorrect` or `gpg.format` | Stale compat link on an old git – rerun `./install.sh --links`. |
+| `git` complains about `zdiff3`, `autocorrect` or `gpg.format` | git was downgraded or the file was copied from another machine – rerun `./install.sh --links` to rewrite the managed block. |
+| Commits show "Please tell me who you are" | Fill in `user.name` / `user.email` in `~/.gitconfig_user`. |
 | Runtimes missing in an IDE | Restart the IDE after the first install; on Linux log out and back in (`environment.d`). |
 | `mise install` failed | Needs network access to GitHub releases; rerun `mise install`. |
 | zsh warns about the ssh-agent plugin | The plugin only loads on Linux when `ssh-agent` exists; install `openssh-client`. |
@@ -335,5 +348,8 @@ Antigen-based setup → current tooling, in this order:
 10. **Docs** – all comments in English, this README.
 11. **Cleanup** – `install.sh --cleanup` removes leftovers of the old setup
     (dry run by default).
+12. **One file per tool** – tmux version differences via `%if` in
+    `tmux.conf`; git identity, signing and version-dependent options in
+    `~/.gitconfig_user` (template + managed block) instead of extra includes.
 
 See `git log` for the individual commits.

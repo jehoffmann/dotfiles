@@ -1,10 +1,3 @@
-# User information. Replace with your own data, obviously.
-[include]
-    path = ~/.gitconfig_user
-
-[includeIf "gitdir:~/Developer/work/"]
-    path = ~/Developer/work/.gitconfig
-
 [init]
     defaultBranch = main
 
@@ -80,7 +73,7 @@
 
 [merge]
     summary = true
-    conflictstyle = diff3      # zdiff3 via compat-2.35 include
+    conflictstyle = diff3      # zdiff3 where supported, see ~/.gitconfig_user
 
 [diff]
     algorithm = histogram
@@ -109,8 +102,11 @@
 [color]
 	ui = auto
 
-# Options older git versions reject (Ubuntu 20.04: git 2.25). install.sh links
-# these files only where git is new enough; missing includes are ignored.
+# Machine-specific settings come last so they override the defaults above:
+# identity, signing key and options that depend on the installed git version
+# (created and maintained by install.sh from config/git/gitconfig_user.template).
 [include]
-    path = ~/.config/git/compat-2.34.gitconfig
-    path = ~/.config/git/compat-2.35.gitconfig
+    path = ~/.gitconfig_user
+
+[includeIf "gitdir:~/Developer/work/"]
+    path = ~/Developer/work/.gitconfig
