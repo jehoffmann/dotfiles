@@ -5,9 +5,9 @@ cheatsheet do
   keyword 'tmux'
 
   introduction <<-'END'
-    Keybindings for ~/.tmux.conf (local config).
+    Keybindings for ~/.config/tmux/tmux.conf (local config).
     Prefix = Ctrl+A (remapped from default Ctrl+B).
-    Plugins: tmux-pain-control, vim-tmux-navigator, tmux-yank, tmux-resurrect, tmux-continuum, tmux-themepack.
+    Plugins: tmux-pain-control, vim-tmux-navigator, tmux-yank, tmux-resurrect, tmux-continuum, dracula/tmux.
   END
 
   ##############################################################################
@@ -324,13 +324,13 @@ cheatsheet do
   end
 
   notes <<-'END'
-    * Reflects ~/.tmux.conf - local config, not tmux defaults.
+    * Reflects ~/.config/tmux/tmux.conf - local config, not tmux defaults.
     * Prefix is Ctrl+A (not the default Ctrl+B). To send Ctrl+A to a shell, press it twice.
     * Window and pane indices start at 1 (base-index 1, pane-base-index 1).
     * escape-time set to 10 ms (tmux-sensible overrides to 0) - fast Escape for vim.
     * focus-events on: vim autoread triggers correctly on pane switch.
     * True color via terminal-overrides xterm*:Tc - matches set termguicolors in vim.
-    * Statusbar managed by tmux-themepack (powerline/double/yellow).
+    * Statusbar managed by dracula/tmux (Dracula PRO colours when installed).
     * Status bar refreshes every 5 seconds (status-interval 5).
   END
 end
