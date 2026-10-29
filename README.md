@@ -29,25 +29,79 @@ with heavier tooling only where it makes sense.
 Tools a distribution does not package – or only in a version that is too old –
 are installed through mise instead (see [Gap filling](#gap-filling-on-linux)).
 
-## Quick start
+## Install
+
+Every block below can be copied as a whole into a terminal.
+
+### New machine – macOS or Linux desktop
 
 ```sh
 git clone git@github.com:jehoffmann/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 exec zsh -l
+vim +PlugInstall +qa
 ```
 
-On a fresh Alpine guest, `git` is not installed yet:
+Then set the terminal font to **JetBrainsMono NFM** (see [Fonts](#fonts)).
+On a licensed machine, copy Dracula PRO to `~/.local/share/dracula-pro/` and run
+`./install.sh --links` once more (see [Theme](#theme-dracula-and-dracula-pro)).
+
+### New machine – Linux server (Ubuntu, Debian/Proxmox, Fedora, Arch)
+
+```sh
+git clone https://github.com/jehoffmann/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install.sh --profile server
+exec zsh -l
+```
+
+HTTPS clone, so no SSH key is needed on the server. Needs `sudo` (or root) for
+the package manager.
+
+### New machine – Alpine guest
 
 ```sh
 apk add git            # as root, or: doas apk add git
 git clone https://github.com/jehoffmann/dotfiles.git ~/.dotfiles
-~/.dotfiles/install.sh # plain sh is fine, the script re-executes itself in bash
+~/.dotfiles/install.sh --profile server
+exec zsh -l
 ```
 
-The installer is idempotent: run it again after pulling changes. Existing files
-are moved aside as `<name>.orig-<timestamp>` before a symlink replaces them.
+Plain `sh` is fine – the installer installs bash and re-executes itself.
+
+### Existing machine with the old setup (Antigen, `master` branch)
+
+```sh
+cd ~/.dotfiles
+git stash -u                         # keeps local changes, if any
+git fetch origin --prune
+git checkout -B main origin/main     # master no longer exists
+git branch -D master 2>/dev/null
+./install.sh                         # servers: ./install.sh --profile server
+exec zsh -l
+vim +PlugInstall +qa
+./install.sh --cleanup               # review what would be removed …
+./install.sh --cleanup --yes         # … and remove it
+```
+
+Files in the way of a symlink are moved aside as `<name>.orig-<timestamp>`.
+Check `git stash list` afterwards; most old local changes are already part of
+the new setup.
+
+### Update a machine that is already on `main`
+
+```sh
+cd ~/.dotfiles
+git pull --ff-only
+./install.sh --links
+mise install
+exec zsh -l
+```
+
+Run the full `./install.sh` instead of `--links` when the Brewfile or the
+package lists changed. Optional: `vim +PlugUpdate +qa`, `mise upgrade`,
+`antidote update`.
 
 ### Options
 
@@ -148,6 +202,12 @@ mise ls            # what is installed and active
 mise upgrade       # update everything
 mise use go@1.23   # pin a version in the current project
 ```
+
+Adding tools: for all desktops edit `config/mise/conf.d/20-dev.toml` in the
+repo; for one machine only use
+`mise use --path ~/.config/mise/conf.d/90-local.toml <tool>`. Avoid
+`mise use -g` – it writes to `~/.config/mise/config.toml`, which is a symlink
+into this repository.
 
 ### Gap filling on Linux
 
@@ -269,23 +329,7 @@ terminal font, not the shell:
 - Servers: nothing to do – your local terminal renders the glyphs.
 - Ghostty bundles the Nerd Font symbols and works with any font.
 
-## Upgrading an existing machine
-
-Older clones still track `master`, which no longer exists – switch once to `main`:
-
-```sh
-cd ~/.dotfiles
-git stash -u                       # only if there are local changes
-git fetch origin --prune
-git checkout -B main origin/main
-git branch -D master
-./install.sh                       # or --links if only configuration changed
-exec zsh -l
-```
-
-Afterwards a plain `git pull && ./install.sh` is enough.
-
-### Cleaning up leftovers
+## Cleaning up leftovers
 
 The installer never deletes anything on its own: files in the way of a symlink
 are moved aside as `<name>.orig-<timestamp>`. Leftovers of older setups are
