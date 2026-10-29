@@ -41,12 +41,14 @@ link .editorconfig
 link .gitconfig
 link .gitignore
 link .tigrc
-link .tmux.conf
 link .vimrc
 link .ripgreprc
 link starship.toml "$HOME/.config/starship.toml"
 link bat/config    "$HOME/.config/bat/config"
 link procs/config.toml "$HOME/.config/procs/config.toml"
+link config/tmux/tmux.conf "$HOME/.config/tmux/tmux.conf"
+# alter Symlink ~/.tmux.conf hätte Vorrang vor der XDG-Config -> entfernen
+[ -L "$HOME/.tmux.conf" ] && run rm "$HOME/.tmux.conf"
 link config/shell/env.sh         "$HOME/.config/shell/env.sh"
 link config/mise/config.toml     "$HOME/.config/mise/config.toml"
 link config/coc/coc-settings.json "$HOME/.config/coc/coc-settings.json"
@@ -96,7 +98,9 @@ if has zsh && [ "$(basename "${SHELL:-}")" != "zsh" ]; then
 fi
 
 ########## tmux ##########
-[ -d "$HOME/.tmux/plugins/tpm" ] || run git clone --depth=1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+TPM_DIR="$HOME/.config/tmux/plugins/tpm"
+[ -d "$TPM_DIR" ] || run git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_DIR"
+run "$TPM_DIR/bin/install_plugins" || true
 
 ########## bat theme ##########
 if has bat || has batcat; then

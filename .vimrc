@@ -155,7 +155,7 @@ let g:airline_theme = 'dark'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
-" tmux statusbar is managed by tmux-themepack, not tmuxline
+" tmux statusbar is managed by catppuccin/tmux, not tmuxline
 
 
 " ══════════════════════════════════════════════════════════════════════════════
