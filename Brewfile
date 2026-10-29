@@ -4,6 +4,7 @@
 brew "zsh"
 brew "git"
 brew "git-delta"
+brew "gh"
 brew "tmux"
 brew "vim"
 brew "neovim"
