@@ -1,0 +1,24 @@
+{
+  "//": "Language-Server kommen aus dem PATH (mise/brew/apt) – coc lädt keine eigenen Binaries",
+
+  "go.goplsPath": "gopls",
+  "go.checkForUpdates": "disabled",
+
+  "rust-analyzer.server.path": "rust-analyzer",
+  "rust-analyzer.updates.checkOnStartup": false,
+
+  "clangd.path": "clangd",
+  "clangd.checkUpdates": false,
+
+  "languageserver": {
+    "ruff": {
+      "command": "ruff",
+      "args": ["server"],
+      "filetypes": ["python"]
+    }
+  },
+
+  "[python]": { "coc.preferences.formatOnSave": true },
+  "[go]":     { "coc.preferences.formatOnSave": true },
+  "[rust]":   { "coc.preferences.formatOnSave": true }
+}

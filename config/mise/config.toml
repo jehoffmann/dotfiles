@@ -1,0 +1,16 @@
+# Globale mise-Tools (~/.config/mise/config.toml). Projekte überschreiben per mise.toml.
+# Installieren/aktualisieren: mise install / mise upgrade
+
+[tools]
+go     = "latest"
+rust   = { version = "stable", components = ["rust-analyzer", "rust-src"] }  # default-Profil: rustfmt, clippy
+node   = "lts"      # für coc.nvim
+python = "3"
+
+# Language-Server/Tools als eigene mise-Tools (überleben Runtime-Upgrades)
+"go:golang.org/x/tools/gopls" = "latest"
+ruff = "latest"
+
+[settings]
+# go install landet in $GOPATH/bin statt im Verzeichnis der jeweiligen Go-Version
+go.set_gobin = false

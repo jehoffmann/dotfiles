@@ -1,4 +1,20 @@
 " ══════════════════════════════════════════════════════════════════════════════
+" Runtimes (mise)
+" ══════════════════════════════════════════════════════════════════════════════
+
+" mise-Shims vorn in den PATH: Vim und alle Plugins/Language-Server nutzen die
+" Runtimes aus ~/.config/mise/config.toml – auch wenn Vim nicht aus einer
+" aktivierten Shell gestartet wurde. Plugins installieren keine eigenen Binaries.
+let s:mise_shims = (empty($XDG_DATA_HOME) ? $HOME . '/.local/share' : $XDG_DATA_HOME) . '/mise/shims'
+if isdirectory(s:mise_shims) && stridx($PATH, s:mise_shims) < 0
+  let $PATH = s:mise_shims . ':' . $PATH
+endif
+
+" coc: Settings unter ~/.config/coc (XDG), Language-Server aus dem PATH
+let g:coc_config_home = (empty($XDG_CONFIG_HOME) ? $HOME . '/.config' : $XDG_CONFIG_HOME) . '/coc'
+
+
+" ══════════════════════════════════════════════════════════════════════════════
 " Plugin Manager
 " ══════════════════════════════════════════════════════════════════════════════
 
@@ -41,31 +57,34 @@ Plug 'junegunn/gv.vim'
 " ── Build / Dispatch ─────────────────────────────────────────────────────────
 Plug 'tpope/vim-dispatch'
 
-" ── C / C++ / Embedded / Kernel ─────────────────────────────────────────────
-Plug 'vim-scripts/c.vim'
-Plug 'bfrg/vim-cpp-modern'
-Plug 'rhysd/vim-clang-format'
+" Sprach-Plugins laden nur für ihren Filetype ('for'); Tooling (gopls,
+" rust-analyzer, ruff, clangd …) kommt aus mise/PATH, nicht aus den Plugins.
 Plug 'jpalardy/vim-slime'
-Plug 'vivien/vim-linux-coding-style'      " kernel style (tabs, 8-width) per tree
+
+" ── C / C++ / Embedded / Kernel ─────────────────────────────────────────────
+Plug 'vim-scripts/c.vim',                 { 'for': ['c', 'cpp'] }
+Plug 'bfrg/vim-cpp-modern',               { 'for': ['c', 'cpp'] }
+Plug 'rhysd/vim-clang-format',            { 'for': ['c', 'cpp'] }
+Plug 'vivien/vim-linux-coding-style',     { 'for': ['c', 'cpp'] }  " kernel style per tree
 
 " ── Android / AOSP ──────────────────────────────────────────────────────────
-Plug 'udalov/kotlin-vim'                  " Kotlin syntax highlighting
-Plug 'cappyzawa/starlark.vim'             " Android.bp / BUILD syntax
+Plug 'udalov/kotlin-vim',                 { 'for': 'kotlin' }
+Plug 'cappyzawa/starlark.vim',            { 'for': 'starlark' }   " Android.bp / BUILD
 
 " ── Go ───────────────────────────────────────────────────────────────────────
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
+" Kein :GoUpdateBinaries – das würde gopls & Co. nach $GOPATH/bin bauen
+Plug 'fatih/vim-go',                      { 'for': 'go' }
 
 " ── Rust ─────────────────────────────────────────────────────────────────────
-Plug 'rust-lang/rust.vim'
+Plug 'rust-lang/rust.vim',                { 'for': 'rust' }
 
 " ── Python ───────────────────────────────────────────────────────────────────
-Plug 'psf/black'
-Plug 'nvie/vim-flake8'
+" black/flake8-Plugins entfernt (legten eigene venvs an) → ruff via coc
 
 " ── Ruby ─────────────────────────────────────────────────────────────────────
-Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
-Plug 'tpope/vim-bundler'
-Plug 'thoughtbot/vim-rspec'
+Plug 'vim-ruby/vim-ruby',                 { 'for': 'ruby' }
+Plug 'tpope/vim-bundler',                 { 'for': 'ruby' }
+Plug 'thoughtbot/vim-rspec',              { 'for': 'ruby' }
 
 " ── Shell / Scripting ────────────────────────────────────────────────────────
 Plug 'WolfgangMehner/bash-support', { 'for': 'sh' }
@@ -78,8 +97,8 @@ Plug 'tfnico/vim-gradle', { 'for': 'gradle' }
 Plug 'mikelue/vim-maven-plugin', { 'for': 'maven' }
 
 " ── Testing ──────────────────────────────────────────────────────────────────
-Plug 'alepez/vim-gtest'
-Plug 'alfredodeza/pytest.vim'
+Plug 'alepez/vim-gtest',                 { 'for': 'cpp' }
+Plug 'alfredodeza/pytest.vim',            { 'for': 'python' }
 
 " ── macOS ────────────────────────────────────────────────────────────────────
 if has('mac')
@@ -100,7 +119,7 @@ set backspace=eol,start,indent
 set colorcolumn=80,120
 set mouse=a
 set ttimeoutlen=10   " match tmux escape-time; prevents ESC lag in insert mode
-set termguicolors    " enable true color (requires tmux terminal-overrides Tc)
+set termguicolors    " enable true color (tmux: terminal-features RGB)
 
 set tabstop=4
 set shiftwidth=4
@@ -243,34 +262,39 @@ autocmd BufWritePre *.c,*.cpp,*.h,*.hpp call ClangFormatIfNotKernel()
 " Go
 " ══════════════════════════════════════════════════════════════════════════════
 
-" Delegate navigation and docs to coc-go/gopls; vim-go provides extras only
+" Delegate navigation, docs, formatting to coc-go/gopls; vim-go provides extras only
 let g:go_def_mapping_enabled    = 0
 let g:go_doc_keywordprg_enabled = 0
+let g:go_gopls_enabled          = 0   " gopls läuft über coc, nicht doppelt
+let g:go_fmt_autosave           = 0   " Format on save macht coc (coc-settings.json)
+let g:go_get_update             = 0   " keine Tool-Updates durch vim-go
 
-autocmd FileType go nmap <leader>gt :GoTest<CR>
-autocmd FileType go nmap <leader>gr :GoRun<CR>
+autocmd FileType go nmap <buffer> <leader>gt :GoTest<CR>
+autocmd FileType go nmap <buffer> <leader>gr :GoRun<CR>
 
 
 " ══════════════════════════════════════════════════════════════════════════════
 " Rust
 " ══════════════════════════════════════════════════════════════════════════════
 
-let g:rustfmt_autosave = 1
+" Format on save über coc/rust-analyzer (rustfmt aus der mise-Toolchain)
+let g:rustfmt_autosave = 0
 
-autocmd FileType rust setlocal tabstop=4 shiftwidth=4 expandtab
-autocmd BufWritePre *.rs :RustFmt
-
-nnoremap <Leader>rr :Dispatch cargo run<CR>
-nnoremap <Leader>rt :Dispatch cargo test<CR>
-nnoremap <Leader>rb :Dispatch cargo build<CR>
-nnoremap <Leader>rc :Dispatch cargo check<CR>
+augroup rust_maps
+  au!
+  au FileType rust setlocal tabstop=4 shiftwidth=4 expandtab
+  au FileType rust nnoremap <buffer> <Leader>rr :Dispatch cargo run<CR>
+  au FileType rust nnoremap <buffer> <Leader>rt :Dispatch cargo test<CR>
+  au FileType rust nnoremap <buffer> <Leader>rb :Dispatch cargo build<CR>
+  au FileType rust nnoremap <buffer> <Leader>rc :Dispatch cargo check<CR>
+augroup END
 
 
 " ══════════════════════════════════════════════════════════════════════════════
 " Python
 " ══════════════════════════════════════════════════════════════════════════════
 
-autocmd BufWritePre *.py Black
+" Format + Lint: ruff (mise) als Language-Server über coc, Format on save in coc-settings.json
 
 
 " ══════════════════════════════════════════════════════════════════════════════

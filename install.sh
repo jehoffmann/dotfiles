@@ -36,6 +36,7 @@ link ".bashrc_${platform}"
 link .zshrc
 link ".zshrc_${platform}"
 link .zsh_plugins.txt
+link .zprofile
 link .editorconfig
 link .gitconfig
 link .gitignore
@@ -46,6 +47,9 @@ link .ripgreprc
 link starship.toml "$HOME/.config/starship.toml"
 link bat/config    "$HOME/.config/bat/config"
 link procs/config.toml "$HOME/.config/procs/config.toml"
+link config/shell/env.sh         "$HOME/.config/shell/env.sh"
+link config/mise/config.toml     "$HOME/.config/mise/config.toml"
+link config/coc/coc-settings.json "$HOME/.config/coc/coc-settings.json"
 
 # Debugger (XDG; lldb kennt kein XDG -> ~/.lldbinit als einziger Symlink im $HOME)
 XDG_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -112,5 +116,12 @@ if has gdb || has gdb-multiarch; then
     mkdir -p "$gef_dir"
     run curl -fsSL -o "$gef_dir/gef.py" https://raw.githubusercontent.com/hugsy/gef/main/gef.py
 fi
+
+########## Runtimes via mise ##########
+# Env (RUSTUP_HOME, CARGO_HOME, GOPATH …) laden, damit mise nach XDG installiert
+source "$DOTFILES/config/shell/env.sh"
+mkdir -p "$GOPATH/bin"
+MISE=$(command -v mise || echo "$HOME/.local/bin/mise")
+run "$MISE" install
 
 echo "Fertig. Neue Shell öffnen."

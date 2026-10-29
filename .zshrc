@@ -33,19 +33,11 @@ _prepend_to_path $HOME/.local/bin
 # geladen werden, sonst sind brew-Tools (fzf, rg, starship …) noch nicht im PATH.
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 
-################ Rust ################
-# Nur Env — rustup wird von install.sh installiert, nicht beim Shell-Start.
-if [ -r $HOME/.cargo/env ]; then
-  export RUSTUP_HOME=$HOME/.rustup
-  export CARGO_HOME=$HOME/.cargo
-  source ${CARGO_HOME}/env
-fi
-
-################ Python ##############
-if _has python3; then
-  export PYTHON_VENV_NAME=".venv"
-  export PIP_REQUIRE_VIRTUALENV=true
-fi
+################ Runtimes / XDG ################
+# XDG-Pfade, RUSTUP_HOME/CARGO_HOME/GOPATH, Python/uv — gemeinsam mit bash und .zprofile
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh" ] && \
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh"
+_append_to_path $GOPATH/bin
 
 ################ Plugin settings (vor dem Laden setzen) ################
 ZSH_TMUX_AUTOCONNECT=true
@@ -69,12 +61,10 @@ source $ANTIDOTE_HOME/antidote.zsh
 # Liest ~/.zsh_plugins.txt, erzeugt daraus ~/.zsh_plugins.zsh (statisch) und sourct es.
 antidote load
 
-################ Toolchains (mise ersetzt asdf/rbenv/pyenv/nvm) ################
+################ Toolchains (mise: go, rust, node, python, ruby …) ################
+# Kein rustup/rbenv/asdf mehr direkt – alles über ~/.config/mise/config.toml
 if _has mise; then
   eval "$(mise activate zsh)"
-elif [[ -d ${HOME}/.rbenv/bin ]]; then
-  _prepend_to_path $HOME/.rbenv/bin
-  eval "$(rbenv init - zsh)"
 fi
 
 if _has rg; then

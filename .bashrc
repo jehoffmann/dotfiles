@@ -33,19 +33,14 @@ _prepend_to_path "$HOME/.local/bin"
 platform=$(uname | tr "[:upper:]" "[:lower:]")
 [ -e "${HOME}/.bashrc_${platform}" ] && source "${HOME}/.bashrc_${platform}"
 
-################ Rust ################
-if [ -r "$HOME/.cargo/env" ]; then
-  export RUSTUP_HOME="$HOME/.rustup"
-  export CARGO_HOME="$HOME/.cargo"
-  source "${CARGO_HOME}/env"
-fi
+################ Runtimes / XDG ################
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh" ] && \
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh"
+_append_to_path "$GOPATH/bin"
 
-################ Toolchains ################
+################ Toolchains (mise) ################
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate bash)"
-elif [[ -d "${HOME}/.rbenv/bin" ]]; then
-  export PATH="$HOME/.rbenv/bin:$PATH"
-  eval "$(rbenv init - bash)"
 fi
 
 # Load Bash It (only if installed)
