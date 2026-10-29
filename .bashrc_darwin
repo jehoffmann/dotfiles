@@ -1,8 +1,13 @@
+# Homebrew in PATH (Apple Silicon: /opt/homebrew, Intel: /usr/local)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 #ADDED BY 010 EDITOR
 test -x "/Applications/010 Editor.app/Contents/CmdLine" && \
   export PATH="$PATH:/Applications/010 Editor.app/Contents/CmdLine"
 
 [[ -S "$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock" ]] && \
   export SSH_AUTH_SOCK="$HOME/Library/Group Containers/group.strongbox.mac.mcguill/agent.sock"
-
-[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && source /opt/homebrew/etc/profile.d/autojump.sh

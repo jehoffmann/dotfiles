@@ -4,7 +4,15 @@ if command -v python3 >/dev/null 2>&1; then
   alias python='python3'
 fi
 
-if command -v bat >/dev/null 2>&1; then
+# Debian/Ubuntu benennen bat und fd um
+if ! command -v bat >/dev/null 2>&1 && command -v batcat >/dev/null 2>&1; then
+  alias bat='batcat'
+fi
+if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
+  alias fd='fdfind'
+fi
+
+if command -v bat >/dev/null 2>&1 || command -v batcat >/dev/null 2>&1; then
   alias cat='bat'
   alias pat='bat --paging=always'
 fi
@@ -24,13 +32,8 @@ if command -v lazygit >/dev/null 2>&1; then
   alias lg='lazygit'
 fi
 
-if command -v procs >/dev/null 2>&1; then
-  alias ps='procs'
-fi
-
-if command -v fd >/dev/null 2>&1; then
-  alias find='fd'
-fi
+# ps/find bewusst NICHT überschreiben: andere Syntax, bricht Muscle-Memory
+# und Copy-Paste-Befehle. procs/fd direkt aufrufen.
 
 if command -v hexyl >/dev/null 2>&1; then
   alias hex='hexyl'
@@ -47,14 +50,29 @@ if command -v nmap >/dev/null 2>&1; then
 fi
 
 if command -v jq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  # Interaktiver jq-Playground: jqrepl file.json  oder  curl … | jqrepl
   jqrepl() {
-    local content
-    content=$(cat "${1:--}")
-    echo '' | fzf --phony --query '.' \
+    local tmp
+    tmp=$(mktemp) || return
+    command cat "${1:--}" >"$tmp"
+    echo '' | fzf --disabled --query '.' \
       --print-query \
-      --preview "echo \$content | jq -C {q} 2>&1" \
+      --preview "jq -C {q} '$tmp' 2>&1" \
       --preview-window=up:90%
+    rm -f "$tmp"
   }
+fi
+
+### Debugger ##################################################################
+# gdb/lldb pur = sauber (auch in CLion/VS Code); RE-Erweiterungen nur per Alias
+if command -v gdb >/dev/null 2>&1; then
+  alias gef='GEF_RC="${XDG_CONFIG_HOME:-$HOME/.config}/gef/gef.rc" gdb -q -ix "${XDG_DATA_HOME:-$HOME/.local/share}/gef/gef.py"'
+fi
+if command -v gdb-multiarch >/dev/null 2>&1; then
+  alias gef-multi='GEF_RC="${XDG_CONFIG_HOME:-$HOME/.config}/gef/gef.rc" gdb-multiarch -q -ix "${XDG_DATA_HOME:-$HOME/.local/share}/gef/gef.py"'
+fi
+if command -v lldb >/dev/null 2>&1; then
+  alias lldb-re='lldb -O "command script import ${XDG_CONFIG_HOME:-$HOME/.config}/lldb/lldbinit.py"'
 fi
 
 ### SSH #######################################################################

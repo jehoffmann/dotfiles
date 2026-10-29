@@ -1,0 +1,34 @@
+# antidote plugin list — https://antidote.sh
+# Nach Änderungen einfach neue Shell öffnen; antidote regeneriert ~/.zsh_plugins.zsh.
+# Updates: `antidote update`
+
+# Oh-My-Zsh-Kompatibilität (Variablen, lib, compinit) — muss zuerst kommen
+getantidote/use-omz
+ohmyzsh/ohmyzsh path:lib
+
+# Completions
+zsh-users/zsh-completions path:src kind:fpath
+
+# OMZ-Plugins (überall)
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/tmux              conditional:has_tmux
+ohmyzsh/ohmyzsh path:plugins/vscode
+ohmyzsh/ohmyzsh path:plugins/command-not-found
+ohmyzsh/ohmyzsh path:plugins/common-aliases
+ohmyzsh/ohmyzsh path:plugins/history
+ohmyzsh/ohmyzsh path:plugins/sudo
+ohmyzsh/ohmyzsh path:plugins/python            conditional:has_python
+
+# macOS
+ohmyzsh/ohmyzsh path:plugins/macos             conditional:is_macos
+ohmyzsh/ohmyzsh path:plugins/copypath          conditional:is_macos
+ohmyzsh/ohmyzsh path:plugins/copyfile          conditional:is_macos
+ohmyzsh/ohmyzsh path:plugins/brew              conditional:is_macos
+ohmyzsh/ohmyzsh path:plugins/xcode             conditional:is_macos
+
+# Linux
+ohmyzsh/ohmyzsh path:plugins/ssh-agent         conditional:is_linux
+
+# Diese zwei als letztes (syntax-highlighting zwingend ganz am Ende)
+zsh-users/zsh-autosuggestions
+zsh-users/zsh-syntax-highlighting

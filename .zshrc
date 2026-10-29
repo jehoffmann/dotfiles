@@ -1,12 +1,8 @@
 ### Check OS ###
 platform='unknown'
 case $(uname) in
-  Darwin)
-    platform='darwin'
-    ;;
-  Linux)
-    platform='linux'
-    ;;
+  Darwin) platform='darwin' ;;
+  Linux)  platform='linux'  ;;
 esac
 
 # Returns whether the given command is executable or aliased.
@@ -33,102 +29,74 @@ _prepend_to_path /usr/local/bin
 _prepend_to_path /usr/local/sbin
 _prepend_to_path $HOME/.local/bin
 
-ANTIGEN_HOME=$HOME/.antigen
-[ -f $ANTIGEN_HOME/antigen.zsh ] || git clone\
-    https://github.com/zsh-users/antigen.git $ANTIGEN_HOME
+# Platform specific env (Homebrew-PATH etc.) — MUSS vor Plugins und _has-Checks
+# geladen werden, sonst sind brew-Tools (fzf, rg, starship …) noch nicht im PATH.
+[ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 
-# Antigen settings
-source ${HOME}/.antigen/antigen.zsh
-
-# tmux config
-ZSH_TMUX_AUTOCONNECT=true
-
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
-
-# Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle git
-antigen bundle tmux
-antigen bundle vscode
-antigen bundle command-not-found
-antigen bundle common-aliases
-antigen bundle history
-antigen bundle sudo
-
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-autosuggestions
-
-if [[ $platform == 'darwin' ]]; then
-    antigen bundle macos
-    antigen bundle copypath
-    antigen bundle copyfile
-    antigen bundle brew
-    antigen bundle xcode
+################ Rust ################
+# Nur Env — rustup wird von install.sh installiert, nicht beim Shell-Start.
+if [ -r $HOME/.cargo/env ]; then
+  export RUSTUP_HOME=$HOME/.rustup
+  export CARGO_HOME=$HOME/.cargo
+  source ${CARGO_HOME}/env
 fi
 
-# .zshrc — nur auf Linux
-if [[ $platform == 'linux' ]]; then
-    zstyle :omz:plugins:ssh-agent agent-forwarding on
-    zstyle :omz:plugins:ssh-agent identities id_air_jens
-    zstyle :omz:plugins:ssh-agent lazy yes
-    
-    antigen bundle ssh-agent
-fi
-
-
-if _has asdf; then
-    antigen bundle asdf
-fi
-
-################ Python ############
+################ Python ##############
 if _has python3; then
   export PYTHON_VENV_NAME=".venv"
-  antigen bundle python
   export PIP_REQUIRE_VIRTUALENV=true
 fi
 
-if _has uv; then
-  export UV_PYTHON_PREFERENCE=managed
+################ Plugin settings (vor dem Laden setzen) ################
+ZSH_TMUX_AUTOCONNECT=true
+
+zstyle :omz:plugins:ssh-agent agent-forwarding on
+zstyle :omz:plugins:ssh-agent identities id_air_jens
+zstyle :omz:plugins:ssh-agent lazy yes
+
+# Bedingungen für conditional:-Annotationen in .zsh_plugins.txt
+function is_macos()   { [[ $OSTYPE == darwin* ]] }
+function is_linux()   { [[ $OSTYPE == linux* ]] }
+function has_python() { (( $+commands[python3] )) }
+function has_tmux()   { (( $+commands[tmux] )) }
+
+################ antidote ################
+ANTIDOTE_HOME=${ZDOTDIR:-$HOME}/.antidote
+[ -f $ANTIDOTE_HOME/antidote.zsh ] || \
+  git clone --depth=1 https://github.com/mattmc3/antidote.git $ANTIDOTE_HOME
+
+source $ANTIDOTE_HOME/antidote.zsh
+# Liest ~/.zsh_plugins.txt, erzeugt daraus ~/.zsh_plugins.zsh (statisch) und sourct es.
+antidote load
+
+################ Toolchains (mise ersetzt asdf/rbenv/pyenv/nvm) ################
+if _has mise; then
+  eval "$(mise activate zsh)"
+elif [[ -d ${HOME}/.rbenv/bin ]]; then
+  _prepend_to_path $HOME/.rbenv/bin
+  eval "$(rbenv init - zsh)"
 fi
-
-################ Rust ################
-if [ -r $HOME/.cargo ]; then
-  export RUSTUP_HOME=$HOME/.rustup
-  export CARGO_HOME=$HOME/.cargo
-
-  _append_to_path ${CARGO_HOME}/bin
-
-  # Install rustup if it isn't installed already
-  if ! [[ -s "${HOME}/.rustup" ]]; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- --no-modify-path -y
-  fi
-
-  [ -r ${CARGO_HOME}/env ] && source ${CARGO_HOME}/env
-fi
-
-################ Ruby ################
-if [[ -d ${HOME}/.rbenv/bin ]]; then
-    export PATH="$HOME/.rbenv/bin:$PATH"
-    eval "$(rbenv init -)"
-fi
-
-antigen bundle axieax/zsh-starship
-
-# Tell antigen that you're done.
-antigen apply
 
 if _has rg; then
   export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 fi
 
-if _has vim; then
-    export EDITOR=vim
+if _has nvim; then
+  export EDITOR=nvim
+elif _has vim; then
+  export EDITOR=vim
 else
-    export EDITOR=vi
+  export EDITOR=vi
 fi
+export VISUAL=$EDITOR
 
 if _has fzf; then
-  source <(fzf --zsh)
+  # fzf >= 0.48 bringt die Integration selbst mit; ältere Distro-Pakete (Debian 12) nicht
+  if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  elif [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]; then
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+  fi
   if _has rg; then
     export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git"'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -140,11 +108,21 @@ if _has fzf; then
   bindkey '^G' fzf-cd-widget
 fi
 
-# source platform specific rc
-[ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
+# zoxide ersetzt autojump (`z foo`, `zi` interaktiv mit fzf)
+if _has zoxide; then
+  eval "$(zoxide init zsh)"
+fi
+
+# Prompt — Fallback für Server ohne starship / Nerd Font
+if _has starship; then
+  eval "$(starship init zsh)"
+else
+  PROMPT='%F{red}%n@%m%f %F{yellow}%3~%f %(?.%F{green}.%F{red})❯%f '
+fi
+
+# aliases & local overrides
 [ -e "${HOME}/.aliases" ]         && source "${HOME}/.aliases"
 [ -e "${HOME}/.zsh_aliases" ]     && source "${HOME}/.zsh_aliases"
 [ -e "${HOME}/.zshrc_local" ]     && source "${HOME}/.zshrc_local"
 
 _append_to_path "$HOME/.lmstudio/bin"
-

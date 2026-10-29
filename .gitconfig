@@ -11,18 +11,34 @@
 [branch]
     autosetupmerge = true
     autosetuprebase = always
+    sort = -committerdate
 
 [fetch]
     prune = true
 
 [rerere]
     enabled = true
+    autoupdate = true
+
+[column]
+    ui = auto
+
+[tag]
+    sort = version:refname
+
+[help]
+    autocorrect = prompt
+
+[commit]
+    verbose = true
 
 [pull]
     rebase = true
 
 [push]
     default = current
+    autoSetupRemote = true
+    followTags = true
 
 [rebase]
     abbreviateCommands = true
@@ -32,7 +48,6 @@
 [core]
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     excludesfile = ~/.gitignore
-    editor = vim
     pager = sh -c 'command -v delta >/dev/null 2>&1 && exec delta || exec less -FRX'
 
 [delta]
@@ -68,10 +83,13 @@
 
 [merge]
     summary = true
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 
 [diff]
+    algorithm = histogram
     colorMoved = default
+    mnemonicPrefix = true
+    renames = true
 
 [mergetool]
     keepBackup = true

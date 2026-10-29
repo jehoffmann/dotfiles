@@ -1,0 +1,14 @@
+# gdb-Basis (~/.config/gdb/gdbinit, gdb >= 11)
+# Wird auch von CLion/VS Code geladen – daher nur harmlose Einstellungen.
+# Reverse Engineering mit GEF: Alias `gef` bzw. `gef-multi` (siehe .aliases)
+
+set history save on
+set history size 10000
+set history remove-duplicates unlimited
+set history filename ~/.local/state/gdb/history
+
+set print pretty on
+set print object on
+set pagination off
+set confirm off
+set disassembly-flavor intel

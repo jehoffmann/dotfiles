@@ -1,4 +1,8 @@
-test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$PATH"
-test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-
-[ -f /usr/share/autojump/autojump.bash ] && source /usr/share/autojump/autojump.bash
+# Linuxbrew in PATH (falls vorhanden)
+for _brew in /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
+  if [[ -x $_brew ]]; then
+    eval "$($_brew shellenv)"
+    break
+  fi
+done
+unset _brew
