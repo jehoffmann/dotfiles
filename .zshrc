@@ -41,6 +41,8 @@ _append_to_path $GOPATH/bin
 
 ################ Plugin settings (vor dem Laden setzen) ################
 ZSH_TMUX_AUTOCONNECT=true
+ZSH_TMUX_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
+ZSH_TMUX_FIXTERM=false     # default-terminal setzt tmux.conf selbst
 
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_air_jens
