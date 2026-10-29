@@ -100,7 +100,7 @@ fi
 ########## tmux ##########
 TPM_DIR="$HOME/.config/tmux/plugins/tpm"
 [ -d "$TPM_DIR" ] || run git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_DIR"
-run "$TPM_DIR/bin/install_plugins" || true
+# Plugins installiert tmux beim ersten Start selbst (siehe tmux.conf)
 
 ########## bat theme ##########
 if has bat || has batcat; then
