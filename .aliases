@@ -4,7 +4,7 @@ if command -v python3 >/dev/null 2>&1; then
   alias python='python3'
 fi
 
-# Debian/Ubuntu benennen bat und fd um
+# Debian/Ubuntu rename bat and fd
 if ! command -v bat >/dev/null 2>&1 && command -v batcat >/dev/null 2>&1; then
   alias bat='batcat'
 fi
@@ -32,8 +32,8 @@ if command -v lazygit >/dev/null 2>&1; then
   alias lg='lazygit'
 fi
 
-# ps/find bewusst NICHT überschreiben: andere Syntax, bricht Muscle-Memory
-# und Copy-Paste-Befehle. procs/fd direkt aufrufen.
+# Deliberately NOT overriding ps/find: different syntax breaks muscle memory
+# and copy-pasted commands. Call procs/fd directly.
 
 if command -v hexyl >/dev/null 2>&1; then
   alias hex='hexyl'
@@ -50,7 +50,7 @@ if command -v nmap >/dev/null 2>&1; then
 fi
 
 if command -v jq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
-  # Interaktiver jq-Playground: jqrepl file.json  oder  curl … | jqrepl
+  # Interactive jq playground: jqrepl file.json  or  curl … | jqrepl
   jqrepl() {
     local tmp
     tmp=$(mktemp) || return
@@ -64,7 +64,7 @@ if command -v jq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
 fi
 
 ### Debugger ##################################################################
-# gdb/lldb pur = sauber (auch in CLion/VS Code); RE-Erweiterungen nur per Alias
+# Plain gdb/lldb stay clean (also in CLion/VS Code); RE extensions only via alias
 if command -v gdb >/dev/null 2>&1; then
   alias gef='GEF_RC="${XDG_CONFIG_HOME:-$HOME/.config}/gef/gef.rc" gdb -q -ix "${XDG_DATA_HOME:-$HOME/.local/share}/gef/gef.py"'
 fi
@@ -77,12 +77,12 @@ fi
 
 ### SSH #######################################################################
 alias ssh-pw='ssh -o PreferredAuthentications=password -o PasswordAuthentication=yes'
-# Multiplexing — Kontrolle über laufende Master-Verbindungen
-alias ssh-check='ssh -O check'      # ssh-check pm-coder → ist Master aktiv?
-alias ssh-exit='ssh -O exit'        # ssh-exit pm-coder  → Master sauber beenden
-alias ssh-stop='ssh -O stop'        # ssh-stop pm-coder  → keine neuen Verbindungen, bestehende laufen aus
-alias ssh-mux='ls ~/.ssh/sockets/'  # alle aktiven Master-Sockets auflisten
-alias ssh-killall='rm -f ~/.ssh/sockets/*'  # alle Master-Sockets hart abbrechen
+# Multiplexing — control running master connections
+alias ssh-check='ssh -O check'      # ssh-check pm-coder → is the master alive?
+alias ssh-exit='ssh -O exit'        # ssh-exit pm-coder  → close the master cleanly
+alias ssh-stop='ssh -O stop'        # ssh-stop pm-coder  → no new connections, existing ones finish
+alias ssh-mux='ls ~/.ssh/sockets/'  # list all active master sockets
+alias ssh-killall='rm -f ~/.ssh/sockets/*'  # hard-kill all master sockets
 
 # Agent
-alias ssh-keys='ssh-add -l'         # welche Keys sind im Agent geladen?
+alias ssh-keys='ssh-add -l'         # which keys are loaded in the agent?

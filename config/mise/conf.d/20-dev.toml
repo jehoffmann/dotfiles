@@ -1,12 +1,12 @@
 # Language runtimes and servers – desktop profile only (linked by install.sh).
-# Installieren/aktualisieren: mise install / mise upgrade
+# Install/update: mise install / mise upgrade
 
 [tools]
 go     = "latest"
-rust   = { version = "stable", components = ["rust-analyzer", "rust-src"] }  # default-Profil: rustfmt, clippy
-node   = "lts"      # für coc.nvim
+rust   = { version = "stable", components = ["rust-analyzer", "rust-src"] }  # default profile: rustfmt, clippy
+node   = "lts"      # for coc.nvim
 python = "3"
 
-# Language-Server/Tools als eigene mise-Tools (überleben Runtime-Upgrades)
+# Language servers/tools as separate mise tools (survive runtime upgrades)
 "go:golang.org/x/tools/gopls" = "latest"
 ruff = "latest"

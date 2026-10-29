@@ -1,5 +1,5 @@
-# Homebrew in PATH (Apple Silicon: /opt/homebrew, Intel: /usr/local)
-# Installation von brew selbst macht install.sh, nicht die Shell.
+# Homebrew on PATH (Apple Silicon: /opt/homebrew, Intel: /usr/local)
+# Installing brew itself is done by install.sh, not by the shell.
 if [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /usr/local/bin/brew ]]; then

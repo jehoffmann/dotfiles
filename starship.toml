@@ -29,8 +29,8 @@ $cmd_duration\
 $line_break\
 $character"""
 
-# freies Dracula; mit lizenziertem Dracula PRO setzt bin/dracula-pro-setup
-# eine lokale Kopie mit Palette 'dracula_pro' (STARSHIP_CONFIG in env.sh)
+# Free Dracula; with a licensed Dracula PRO, bin/dracula-pro-setup generates
+# a local copy with palette 'dracula_pro' (STARSHIP_CONFIG in env.sh)
 palette = 'dracula'
 
 [os]

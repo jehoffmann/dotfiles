@@ -1,4 +1,4 @@
-# Linuxbrew in PATH (falls vorhanden)
+# Linuxbrew on PATH (if installed)
 for _brew in /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
   if [[ -x $_brew ]]; then
     eval "$($_brew shellenv)"

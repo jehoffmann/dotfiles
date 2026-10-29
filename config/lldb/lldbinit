@@ -1,6 +1,6 @@
-# lldb-Basis. lldb kennt kein XDG – ~/.lldbinit ist ein Symlink hierher.
-# Wird auch von CLion/VS Code geladen – daher nur harmlose Einstellungen.
-# Reverse Engineering mit lldbinit.py: Alias `lldb-re` (siehe .aliases)
+# lldb base settings. lldb has no XDG support – ~/.lldbinit is a symlink to this file.
+# Also loaded by CLion/VS Code – therefore only harmless settings.
+# Reverse engineering with lldbinit.py: alias `lldb-re` (see .aliases)
 
 settings set target.x86-disassembly-flavor intel
 settings set stop-disassembly-display no-debuginfo

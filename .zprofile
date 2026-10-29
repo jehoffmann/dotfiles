@@ -1,5 +1,5 @@
-# Login-Shell: Umgebung für GUI-Apps/IDEs (CLion, VS Code lesen das Login-Env)
-# Interaktive Shells bekommen danach in .zshrc das volle `mise activate`.
+# Login shell: environment for GUI apps/IDEs (CLion, VS Code read the login env).
+# Interactive shells additionally get the full `mise activate` in .zshrc.
 
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh" ] && \
   source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh"
@@ -10,7 +10,7 @@ for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbr
 done
 unset _brew
 
-# mise-Shims: Runtimes auch für Prozesse ohne interaktive Shell
+# mise shims: runtimes also for processes without an interactive shell
 if [[ -x $HOME/.local/bin/mise ]]; then
   eval "$($HOME/.local/bin/mise activate zsh --shims)"
 elif (( $+commands[mise] )); then

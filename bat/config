@@ -1,6 +1,6 @@
 # bat configuration
-# Theme: freies Dracula (eingebaut). Mit Dracula PRO setzt env.sh BAT_THEME="Dracula Pro",
-# das hat Vorrang vor dieser Datei (gilt auch für delta).
+# Theme: free Dracula (built in). With Dracula PRO, env.sh sets BAT_THEME="Dracula Pro",
+# which takes precedence over this file (delta uses it too).
 --theme="Dracula"
 
 # Behave like cat — no pager, output streams directly

@@ -1,6 +1,6 @@
-# gdb-Basis (~/.config/gdb/gdbinit, gdb >= 11)
-# Wird auch von CLion/VS Code geladen – daher nur harmlose Einstellungen.
-# Reverse Engineering mit GEF: Alias `gef` bzw. `gef-multi` (siehe .aliases)
+# gdb base settings (~/.config/gdb/gdbinit, gdb >= 11)
+# Also loaded by CLion/VS Code – therefore only harmless settings.
+# Reverse engineering with GEF: alias `gef` or `gef-multi` (see .aliases)
 
 set history save on
 set history size 10000

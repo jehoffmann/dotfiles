@@ -1,5 +1,5 @@
 {
-  "//": "Language-Server kommen aus dem PATH (mise/brew/apt) – coc lädt keine eigenen Binaries",
+  "//": "Language servers come from PATH (mise/brew/apt) – coc downloads no binaries of its own",
 
   "go.goplsPath": "gopls",
   "go.checkForUpdates": "disabled",

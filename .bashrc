@@ -29,7 +29,7 @@ _prepend_to_path /usr/local/bin
 _prepend_to_path /usr/local/sbin
 _prepend_to_path "$HOME/.local/bin"
 
-# Platform specific env (Homebrew-PATH) — vor allen command -v Checks
+# Platform specific env (Homebrew PATH) — before any command -v checks
 platform=$(uname | tr "[:upper:]" "[:lower:]")
 [ -e "${HOME}/.bashrc_${platform}" ] && source "${HOME}/.bashrc_${platform}"
 

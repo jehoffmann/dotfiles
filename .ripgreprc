@@ -1,20 +1,20 @@
-# Groß-/Kleinschreibung ignorieren, außer das Pattern enthält Großbuchstaben
+# Ignore case unless the pattern contains uppercase letters
 --smart-case
 
-# Versteckte Dateien durchsuchen (.github, .env.example, etc.)
+# Search hidden files (.github, .env.example, etc.)
 --hidden
 
-# .git immer ausschließen (nötig wegen --hidden)
+# Always exclude .git (needed because of --hidden)
 --glob=!.git/
 
-# Symlinks folgen
+# Follow symlinks
 --follow
 
-# Lange Zeilen kürzen statt alles auszugeben (z.B. minifizierte Files)
+# Truncate long lines instead of printing everything (e.g. minified files)
 --max-columns=150
 --max-columns-preview
 
-# Build-Artefakte und generierte Dateien überspringen
+# Skip build artefacts and generated files
 --glob=!node_modules/
 --glob=!target/
 --glob=!dist/

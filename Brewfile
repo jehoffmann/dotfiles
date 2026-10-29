@@ -1,6 +1,6 @@
 # brew bundle --file=~/.dotfiles/Brewfile
 
-# Shell & Basis
+# Shell & basics
 brew "zsh"
 brew "git"
 brew "git-delta"
@@ -13,7 +13,7 @@ brew "mise"
 brew "zoxide"
 brew "fzf"
 
-# CLI-Ersatztools
+# Modern CLI replacements
 brew "ripgrep"
 brew "bat"
 brew "eza"
@@ -25,8 +25,8 @@ brew "hexyl"
 brew "lazygit"
 brew "uv"
 
-# Security / Netz
+# Security / network
 brew "nmap"
 
-# Nerd Font für starship-Icons
+# Nerd Font for starship icons
 cask "font-jetbrains-mono-nerd-font"

@@ -29,26 +29,26 @@ _prepend_to_path /usr/local/bin
 _prepend_to_path /usr/local/sbin
 _prepend_to_path $HOME/.local/bin
 
-# Platform specific env (Homebrew-PATH etc.) — MUSS vor Plugins und _has-Checks
-# geladen werden, sonst sind brew-Tools (fzf, rg, starship …) noch nicht im PATH.
+# Platform specific env (Homebrew PATH etc.) — MUST be loaded before plugins and
+# _has checks, otherwise brew tools (fzf, rg, starship …) are not on PATH yet.
 [ -e "${HOME}/.zshrc_${platform}" ] && source "${HOME}/.zshrc_${platform}"
 
 ################ Runtimes / XDG ################
-# XDG-Pfade, RUSTUP_HOME/CARGO_HOME/GOPATH, Python/uv — gemeinsam mit bash und .zprofile
+# XDG paths, RUSTUP_HOME/CARGO_HOME/GOPATH, Python/uv — shared with bash and .zprofile
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh" ] && \
   source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env.sh"
 _append_to_path $GOPATH/bin
 
-################ Plugin settings (vor dem Laden setzen) ################
+################ Plugin settings (set before loading) ################
 ZSH_TMUX_AUTOCONNECT=true
 ZSH_TMUX_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
-ZSH_TMUX_FIXTERM=false     # default-terminal setzt tmux.conf selbst
+ZSH_TMUX_FIXTERM=false     # tmux.conf sets default-terminal itself
 
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_air_jens
 zstyle :omz:plugins:ssh-agent lazy yes
 
-# Bedingungen für conditional:-Annotationen in .zsh_plugins.txt
+# Conditions for the conditional: annotations in .zsh_plugins.txt
 function is_macos()   { [[ $OSTYPE == darwin* ]] }
 function is_linux()   { [[ $OSTYPE == linux* ]] }
 function has_python() { (( $+commands[python3] )) }
@@ -61,11 +61,11 @@ ANTIDOTE_HOME=${ZDOTDIR:-$HOME}/.antidote
   git clone --depth=1 https://github.com/mattmc3/antidote.git $ANTIDOTE_HOME
 
 source $ANTIDOTE_HOME/antidote.zsh
-# Liest ~/.zsh_plugins.txt, erzeugt daraus ~/.zsh_plugins.zsh (statisch) und sourct es.
+# Reads ~/.zsh_plugins.txt, generates the static ~/.zsh_plugins.zsh and sources it.
 antidote load
 
 ################ Toolchains (mise: go, rust, node, python, ruby …) ################
-# Kein rustup/rbenv/asdf mehr direkt – alles über ~/.config/mise/config.toml
+# No direct rustup/rbenv/asdf any more – everything via ~/.config/mise
 if _has mise; then
   eval "$(mise activate zsh)"
 fi
@@ -84,7 +84,7 @@ fi
 export VISUAL=$EDITOR
 
 if _has fzf; then
-  # fzf >= 0.48 bringt die Integration selbst mit; ältere Distro-Pakete (Debian 12) nicht
+  # fzf >= 0.48 ships its own shell integration; older distro packages do not
   if fzf --zsh >/dev/null 2>&1; then
     source <(fzf --zsh)
   else
@@ -106,12 +106,12 @@ if _has fzf; then
   bindkey '^G' fzf-cd-widget
 fi
 
-# zoxide ersetzt autojump (`z foo`, `zi` interaktiv mit fzf)
+# zoxide replaces autojump (`z foo`, `zi` interactive with fzf)
 if _has zoxide; then
   eval "$(zoxide init zsh)"
 fi
 
-# Prompt — Fallback für Server ohne starship / Nerd Font
+# Prompt — fallback for servers without starship / Nerd Font
 if _has starship; then
   eval "$(starship init zsh)"
 else

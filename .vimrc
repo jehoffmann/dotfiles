@@ -2,15 +2,15 @@
 " Runtimes (mise)
 " ══════════════════════════════════════════════════════════════════════════════
 
-" mise-Shims vorn in den PATH: Vim und alle Plugins/Language-Server nutzen die
-" Runtimes aus ~/.config/mise/config.toml – auch wenn Vim nicht aus einer
-" aktivierten Shell gestartet wurde. Plugins installieren keine eigenen Binaries.
+" mise shims first on PATH: Vim and all plugins/language servers use the
+" runtimes from ~/.config/mise – even when Vim was not started from an
+" activated shell. Plugins install no binaries of their own.
 let s:mise_shims = (empty($XDG_DATA_HOME) ? $HOME . '/.local/share' : $XDG_DATA_HOME) . '/mise/shims'
 if isdirectory(s:mise_shims) && stridx($PATH, s:mise_shims) < 0
   let $PATH = s:mise_shims . ':' . $PATH
 endif
 
-" coc: Settings unter ~/.config/coc (XDG), Language-Server aus dem PATH
+" coc: settings in ~/.config/coc (XDG), language servers from PATH
 let g:coc_config_home = (empty($XDG_CONFIG_HOME) ? $HOME . '/.config' : $XDG_CONFIG_HOME) . '/coc'
 
 " Capabilities – heavy IDE plugins only where they can run (servers, Ubuntu 20.04's Vim 8.1)
@@ -34,7 +34,7 @@ call plug#begin('~/.vim/bundle')
 " ── UI & Editor ──────────────────────────────────────────────────────────────
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'dracula/vim', { 'as': 'dracula' }   " Fallback ohne Dracula PRO
+Plug 'dracula/vim', { 'as': 'dracula' }   " fallback without Dracula PRO
 Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kien/rainbow_parentheses.vim'
@@ -70,8 +70,8 @@ Plug 'junegunn/gv.vim'
 " ── Build / Dispatch ─────────────────────────────────────────────────────────
 Plug 'tpope/vim-dispatch'
 
-" Sprach-Plugins laden nur für ihren Filetype ('for'); Tooling (gopls,
-" rust-analyzer, ruff, clangd …) kommt aus mise/PATH, nicht aus den Plugins.
+" Language plugins load only for their filetype ('for'); tooling (gopls,
+" rust-analyzer, ruff, clangd …) comes from mise/PATH, not from the plugins.
 Plug 'jpalardy/vim-slime'
 
 " ── C / C++ / Embedded / Kernel ─────────────────────────────────────────────
@@ -85,7 +85,7 @@ Plug 'udalov/kotlin-vim',                 { 'for': 'kotlin' }
 Plug 'cappyzawa/starlark.vim',            { 'for': 'starlark' }   " Android.bp / BUILD
 
 " ── Go ───────────────────────────────────────────────────────────────────────
-" Kein :GoUpdateBinaries – das würde gopls & Co. nach $GOPATH/bin bauen
+" No :GoUpdateBinaries – it would build gopls & co. into $GOPATH/bin
 if executable('go') && (has('nvim-0.4') || has('patch-8.2.5072'))   " vim-go minimum, only with Go installed
   Plug 'fatih/vim-go',                    { 'for': 'go' }
 endif
@@ -94,7 +94,7 @@ endif
 Plug 'rust-lang/rust.vim',                { 'for': 'rust' }
 
 " ── Python ───────────────────────────────────────────────────────────────────
-" black/flake8-Plugins entfernt (legten eigene venvs an) → ruff via coc
+" black/flake8 plugins removed (they created their own venvs) → ruff via coc
 
 " ── Ruby ─────────────────────────────────────────────────────────────────────
 Plug 'vim-ruby/vim-ruby',                 { 'for': 'ruby' }
@@ -137,7 +137,7 @@ set mouse=a
 set ttimeoutlen=10   " match tmux escape-time; prevents ESC lag in insert mode
 set termguicolors    " enable true color (tmux: terminal-features RGB)
 
-" Theme: Dracula PRO, wenn lokal installiert (lizenziert, nicht im Repo), sonst freies Dracula
+" Theme: Dracula PRO if installed locally (licensed, not in the repo), else free Dracula
 let s:dracula_pro = (empty($XDG_DATA_HOME) ? $HOME . '/.local/share' : $XDG_DATA_HOME) . '/dracula-pro/themes/vim'
 if isdirectory(s:dracula_pro)
   execute 'set runtimepath+=' . fnameescape(s:dracula_pro)
@@ -292,9 +292,9 @@ autocmd BufWritePre *.c,*.cpp,*.h,*.hpp call ClangFormatIfNotKernel()
 " Delegate navigation, docs, formatting to coc-go/gopls; vim-go provides extras only
 let g:go_def_mapping_enabled    = 0
 let g:go_doc_keywordprg_enabled = 0
-let g:go_gopls_enabled          = 0   " gopls läuft über coc, nicht doppelt
-let g:go_fmt_autosave           = 0   " Format on save macht coc (coc-settings.json)
-let g:go_get_update             = 0   " keine Tool-Updates durch vim-go
+let g:go_gopls_enabled          = 0   " gopls runs via coc, not twice
+let g:go_fmt_autosave           = 0   " format on save is done by coc (coc-settings.json)
+let g:go_get_update             = 0   " no tool updates by vim-go
 let g:go_imports_autosave      = 0   " goimports on save: coc/gopls handles imports
 
 autocmd FileType go nmap <buffer> <leader>gt :GoTest<CR>
@@ -305,7 +305,7 @@ autocmd FileType go nmap <buffer> <leader>gr :GoRun<CR>
 " Rust
 " ══════════════════════════════════════════════════════════════════════════════
 
-" Format on save über coc/rust-analyzer (rustfmt aus der mise-Toolchain)
+" Format on save via coc/rust-analyzer (rustfmt from the mise toolchain)
 let g:rustfmt_autosave = 0
 
 augroup rust_maps
@@ -322,7 +322,7 @@ augroup END
 " Python
 " ══════════════════════════════════════════════════════════════════════════════
 
-" Format + Lint: ruff (mise) als Language-Server über coc, Format on save in coc-settings.json
+" Format + lint: ruff (mise) as language server via coc, format on save in coc-settings.json
 
 
 " ══════════════════════════════════════════════════════════════════════════════
