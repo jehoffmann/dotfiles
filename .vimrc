@@ -143,7 +143,9 @@ if isdirectory(s:dracula_pro)
   execute 'set runtimepath+=' . fnameescape(s:dracula_pro)
   let g:dracula_colorterm = 0
   silent! colorscheme dracula-pro
-  let g:airline_theme = 'dracula-pro'
+  " airline shim for the PRO theme lives in the repo (config/vim)
+  execute 'set runtimepath+=' . fnameescape(fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/config/vim')
+  let g:airline_theme = 'dracula_pro'
 else
   silent! colorscheme dracula
   let g:airline_theme = 'dracula'

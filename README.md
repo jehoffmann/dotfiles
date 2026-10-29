@@ -251,7 +251,9 @@ starship config using the PRO palette (`STARSHIP_CONFIG` and `BAT_THEME` are set
 in `env.sh` when it exists). It links the PRO tmTheme for bat/delta and, on
 macOS, imports the Terminal.app profile, sets it as default and switches its
 font to JetBrainsMono NFM. Vim picks up `colorscheme dracula-pro` from the
-package directly.
+package directly; the PRO airline theme is reached through a small shim in
+`config/vim/autoload/airline/themes/dracula_pro.vim` (its own file name is not
+resolvable by airline).
 
 ### Fonts
 
