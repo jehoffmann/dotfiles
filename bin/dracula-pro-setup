@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+# Bindet ein lokal installiertes Dracula PRO ein (lizenziert, NICHT im Repo).
+# Erwartet das Paket unter ${XDG_DATA_HOME:-~/.local/share}/dracula-pro (themes/, design/palette.md).
+# Erzeugt lokale Overrides in .../dracula-pro/generated/ – ohne Paket bleibt alles beim freien Dracula.
+#   bin/dracula-pro-setup [pro|blade|buffy|lincoln|morbius]
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PRO="${XDG_DATA_HOME:-$HOME/.local/share}/dracula-pro"
+GEN="$PRO/generated"
+PALETTE="$PRO/design/palette.md"
+VARIANT="${1:-pro}"
+
+[ -f "$PALETTE" ] || { echo "Dracula PRO nicht gefunden ($PRO) – freies Dracula bleibt aktiv."; exit 0; }
+mkdir -p "$GEN"
+
+# Farbe aus palette.md lesen: pal "<Abschnitt>" "<Name>"
+pal() {
+    awk -F'|' -v sec="## $1" -v key="$2" '
+        /^## / { insec = ($0 == sec) }
+        insec { k = $2; gsub(/^ +| +$/, "", k); if (k == key) { v = $3; gsub(/[ `]/, "", v); print v; exit } }
+    ' "$PALETTE"
+}
+
+case "$VARIANT" in
+    pro) SEC="Dracula PRO" ;;
+    *)   SEC="Dracula PRO - $(tr '[:lower:]' '[:upper:]' <<<"${VARIANT:0:1}")${VARIANT:1}" ;;
+esac
+BASE="Base Dracula PRO"
+
+FG=$(pal "$BASE" Foreground); CYAN=$(pal "$BASE" Cyan);   GREEN=$(pal "$BASE" Green)
+ORANGE=$(pal "$BASE" Orange); PINK=$(pal "$BASE" Pink);   PURPLE=$(pal "$BASE" Purple)
+RED=$(pal "$BASE" Red);       YELLOW=$(pal "$BASE" Yellow)
+BG=$(pal "$SEC" Background);  COMMENT=$(pal "$SEC" Comment); SEL=$(pal "$SEC" Selection)
+
+for v in FG CYAN GREEN ORANGE PINK PURPLE RED YELLOW BG COMMENT SEL; do
+    [ -n "${!v}" ] || { echo "Farbe $v für '$SEC' nicht gefunden in $PALETTE" >&2; exit 1; }
+done
+
+# ── tmux: Farben für dracula/tmux ───────────────────────────────────────────
+cat >"$GEN/tmux.conf" <<TMUX
+# generiert von bin/dracula-pro-setup ($SEC) – nicht bearbeiten
+set -g @dracula-colors "
+white='$FG'
+gray='$SEL'
+dark_gray='$BG'
+light_purple='$PURPLE'
+dark_purple='$COMMENT'
+cyan='$CYAN'
+green='$GREEN'
+orange='$ORANGE'
+red='$RED'
+pink='$PINK'
+yellow='$YELLOW'
+"
+TMUX
+
+# ── starship: Repo-Config mit PRO-Palette ───────────────────────────────────
+sed "s/^palette = .*/palette = 'dracula_pro'/" "$DOTFILES/starship.toml" >"$GEN/starship.toml"
+cat >>"$GEN/starship.toml" <<STAR
+
+# generiert von bin/dracula-pro-setup ($SEC)
+[palettes.dracula_pro]
+red = "$RED"
+peach = "$ORANGE"
+yellow = "$YELLOW"
+green = "$GREEN"
+sapphire = "$CYAN"
+lavender = "$PURPLE"
+pink = "$PINK"
+crust = "$BG"
+text = "$FG"
+STAR
+
+# ── bat / delta: tmTheme verlinken ──────────────────────────────────────────
+BAT=$(command -v bat || command -v batcat || true)
+if [ -n "$BAT" ]; then
+    tm="$PRO/themes/sublime/dracula-pro.tmTheme"
+    [ "$VARIANT" = pro ] || tm="$PRO/themes/sublime/dracula-pro-$VARIANT.tmTheme"
+    mkdir -p "$("$BAT" --config-dir)/themes"
+    ln -sf "$tm" "$("$BAT" --config-dir)/themes/Dracula Pro.tmTheme"
+    "$BAT" cache --build >/dev/null
+fi
+
+# ── Terminal.app: Profil importieren, als Standard setzen, Nerd Font ────────
+if [ "$(uname)" = Darwin ]; then
+    term="$PRO/themes/terminal-app/dracula-pro.terminal"
+    [ "$VARIANT" = pro ] || term="$PRO/themes/terminal-app/dracula-pro-$VARIANT.terminal"
+    name=$(plutil -extract name raw "$term")
+    if ! defaults read com.apple.Terminal "Window Settings" 2>/dev/null | grep -q "\"$name\""; then
+        open "$term"; sleep 2      # importiert das Profil (öffnet ein Fenster)
+    fi
+    osascript >/dev/null <<OSA || echo "! Terminal-Profil bitte manuell als Standard setzen: $name"
+tell application "Terminal"
+    set s to settings set "$name"
+    set font name of s to "JetBrainsMonoNFM-Regular"
+    set font size of s to 13
+    set default settings to s
+    set startup settings to s
+end tell
+OSA
+fi
+
+echo "Dracula PRO ($SEC) eingerichtet: $GEN"

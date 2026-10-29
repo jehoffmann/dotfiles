@@ -63,6 +63,9 @@ mkdir -p "$XDG_CONFIG/gef" "${XDG_STATE_HOME:-$HOME/.local/state}/gdb"
 # altes ~/.gdbinit hätte Vorrang-Konflikte mit ~/.config/gdb/gdbinit -> beiseite
 [ -e "$HOME/.gdbinit" ] && run mv "$HOME/.gdbinit" "$HOME/.gdbinit.orig-$NOW"
 
+# Dracula PRO (falls lokal vorhanden) – erzeugt lokale Overrides für tmux, starship, bat
+"$DOTFILES/bin/dracula-pro-setup" || true
+
 [ "${1:-}" = "--links" ] && exit 0
 
 ########## Pakete ##########
@@ -102,18 +105,6 @@ TPM_DIR="$HOME/.config/tmux/plugins/tpm"
 [ -d "$TPM_DIR" ] || run git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_DIR"
 # Plugins installiert tmux beim ersten Start selbst (siehe tmux.conf)
 
-########## bat theme ##########
-if has bat || has batcat; then
-    BAT=$(has bat && echo bat || echo batcat)
-    theme_dir="$($BAT --config-dir)/themes"
-    if [ ! -f "$theme_dir/Catppuccin Latte.tmTheme" ]; then
-        mkdir -p "$theme_dir"
-        curl -fsSLo "$theme_dir/Catppuccin Latte.tmTheme" \
-            "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme"
-        $BAT cache --build
-    fi
-fi
-
 ########## GEF (nur wo gdb existiert; auf macOS/Apple Silicon gibt es kein gdb) ##########
 if has gdb || has gdb-multiarch; then
     gef_dir="${XDG_DATA_HOME:-$HOME/.local/share}/gef"
@@ -127,5 +118,7 @@ source "$DOTFILES/config/shell/env.sh"
 mkdir -p "$GOPATH/bin"
 MISE=$(command -v mise || echo "$HOME/.local/bin/mise")
 run "$MISE" install
+
+"$DOTFILES/bin/dracula-pro-setup" || true   # nochmal, jetzt mit bat installiert
 
 echo "Fertig. Neue Shell öffnen."

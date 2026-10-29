@@ -17,3 +17,9 @@ export PYTHON_VENV_NAME=".venv"
 export PIP_REQUIRE_VIRTUALENV=true
 export UV_PYTHON_PREFERENCE=only-system
 export UV_PYTHON_DOWNLOADS=never
+
+# Theme: Dracula PRO (lizenziert, lokal unter $XDG_DATA_HOME/dracula-pro), sonst freies Dracula
+if [ -f "$XDG_DATA_HOME/dracula-pro/generated/starship.toml" ]; then
+  export STARSHIP_CONFIG="$XDG_DATA_HOME/dracula-pro/generated/starship.toml"
+  export BAT_THEME="Dracula Pro"
+fi

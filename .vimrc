@@ -29,6 +29,7 @@ call plug#begin('~/.vim/bundle')
 " ── UI & Editor ──────────────────────────────────────────────────────────────
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'dracula/vim', { 'as': 'dracula' }   " Fallback ohne Dracula PRO
 Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kien/rainbow_parentheses.vim'
@@ -115,11 +116,24 @@ call plug#end()
 set number relativenumber
 set ruler
 set background=dark
+
 set backspace=eol,start,indent
 set colorcolumn=80,120
 set mouse=a
 set ttimeoutlen=10   " match tmux escape-time; prevents ESC lag in insert mode
 set termguicolors    " enable true color (tmux: terminal-features RGB)
+
+" Theme: Dracula PRO, wenn lokal installiert (lizenziert, nicht im Repo), sonst freies Dracula
+let s:dracula_pro = (empty($XDG_DATA_HOME) ? $HOME . '/.local/share' : $XDG_DATA_HOME) . '/dracula-pro/themes/vim'
+if isdirectory(s:dracula_pro)
+  execute 'set runtimepath+=' . fnameescape(s:dracula_pro)
+  let g:dracula_colorterm = 0
+  silent! colorscheme dracula-pro
+  let g:airline_theme = 'dracula-pro'
+else
+  silent! colorscheme dracula
+  let g:airline_theme = 'dracula'
+endif
 
 set tabstop=4
 set shiftwidth=4
@@ -132,9 +146,7 @@ set expandtab
 " ══════════════════════════════════════════════════════════════════════════════
 
 highlight clear SignColumn
-highlight ColorColumn ctermbg=LightGray
 
-hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 nnoremap <Leader>c :set cursorline!<CR>
 augroup CursorLine
   au!
@@ -151,11 +163,10 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_guide_size = 1
 let g:show_spaces_that_precede_tabs = 1
 
-let g:airline_theme = 'dark'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
-" tmux statusbar is managed by catppuccin/tmux, not tmuxline
+" tmux statusbar is managed by dracula/tmux, not tmuxline
 
 
 " ══════════════════════════════════════════════════════════════════════════════

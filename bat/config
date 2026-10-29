@@ -1,10 +1,7 @@
 # bat configuration
-# Theme: install catppuccin via https://github.com/catppuccin/bat
-#   mkdir -p "$(bat --config-dir)/themes"
-#   curl -Lo "$(bat --config-dir)/themes/Catppuccin Latte.tmTheme" \
-#     https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme
-#   bat cache --build
---theme="Catppuccin Latte"
+# Theme: freies Dracula (eingebaut). Mit Dracula PRO setzt env.sh BAT_THEME="Dracula Pro",
+# das hat Vorrang vor dieser Datei (gilt auch für delta).
+--theme="Dracula"
 
 # Behave like cat — no pager, output streams directly
 --paging=never
