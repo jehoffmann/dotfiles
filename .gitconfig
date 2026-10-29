@@ -26,9 +26,6 @@
 [tag]
     sort = version:refname
 
-[help]
-    autocorrect = prompt
-
 [commit]
     verbose = true
 
@@ -83,7 +80,7 @@
 
 [merge]
     summary = true
-    conflictstyle = zdiff3
+    conflictstyle = diff3      # zdiff3 via compat-2.35 include
 
 [diff]
     algorithm = histogram
@@ -112,11 +109,8 @@
 [color]
 	ui = auto
 
-# if format is ssh we need a allowed_signers file see next section
-# also set the user.signingkey to your pubkey. In case of gpg and a subkey
-# set it like signingkey=<keyid>!
-[gpg]
-	format = ssh
-
-[gpg "ssh"]
-	allowedSignersFile = ~/.ssh/allowed_signers
+# Options older git versions reject (Ubuntu 20.04: git 2.25). install.sh links
+# these files only where git is new enough; missing includes are ignored.
+[include]
+    path = ~/.config/git/compat-2.34.gitconfig
+    path = ~/.config/git/compat-2.35.gitconfig

@@ -13,6 +13,11 @@ endif
 " coc: Settings unter ~/.config/coc (XDG), Language-Server aus dem PATH
 let g:coc_config_home = (empty($XDG_CONFIG_HOME) ? $HOME . '/.config' : $XDG_CONFIG_HOME) . '/coc'
 
+" Capabilities – heavy IDE plugins only where they can run (servers, Ubuntu 20.04's Vim 8.1)
+let s:has_coc        = executable('node') && (has('nvim-0.8') || has('patch-9.0.0438'))
+let s:has_vimspector = has('python3') && (has('nvim-0.8') || has('patch-8.2.4797'))
+let s:has_ctags      = executable('ctags')
+
 
 " ══════════════════════════════════════════════════════════════════════════════
 " Plugin Manager
@@ -37,19 +42,26 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
 " ── Navigation & Search ──────────────────────────────────────────────────────
+Plug 'junegunn/fzf'                       " base Vim integration, uses fzf from PATH
 Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'ludovicchabant/vim-gutentags'       " auto ctags/cscope for large trees
+if s:has_ctags
+  Plug 'ludovicchabant/vim-gutentags'     " auto ctags/cscope for large trees
+endif
 
 " ── Editing ──────────────────────────────────────────────────────────────────
 Plug 'tpope/vim-surround'
 Plug 'mg979/vim-visual-multi'
 
 " ── LSP / Intellisense (IDE core) ────────────────────────────────────────────
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+if s:has_coc
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+endif
 
 " ── Debugging ────────────────────────────────────────────────────────────────
-Plug 'puremourning/vimspector'
+if s:has_vimspector
+  Plug 'puremourning/vimspector'
+endif
 
 " ── Git ──────────────────────────────────────────────────────────────────────
 Plug 'tpope/vim-fugitive'
@@ -74,7 +86,9 @@ Plug 'cappyzawa/starlark.vim',            { 'for': 'starlark' }   " Android.bp /
 
 " ── Go ───────────────────────────────────────────────────────────────────────
 " Kein :GoUpdateBinaries – das würde gopls & Co. nach $GOPATH/bin bauen
-Plug 'fatih/vim-go',                      { 'for': 'go' }
+if executable('go') && (has('nvim-0.4') || has('patch-8.2.5072'))   " vim-go minimum, only with Go installed
+  Plug 'fatih/vim-go',                    { 'for': 'go' }
+endif
 
 " ── Rust ─────────────────────────────────────────────────────────────────────
 Plug 'rust-lang/rust.vim',                { 'for': 'rust' }
@@ -173,19 +187,17 @@ let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
 " File Explorer  (coc-explorer)
 " ══════════════════════════════════════════════════════════════════════════════
 
-nnoremap <C-n>      :CocCommand explorer<CR>
-nnoremap <leader>nf :CocCommand explorer --reveal<CR>
+if s:has_coc
+  nnoremap <C-n>      :CocCommand explorer<CR>
+  nnoremap <leader>nf :CocCommand explorer --reveal<CR>
+else
+  nnoremap <C-n>      :Lexplore<CR>
+endif
 
 
 " ══════════════════════════════════════════════════════════════════════════════
 " FZF / Project Search
 " ══════════════════════════════════════════════════════════════════════════════
-
-if !empty($HOMEBREW_PREFIX)
-  set rtp+=$HOMEBREW_PREFIX/opt/fzf
-elseif isdirectory($HOME . '/.fzf')
-  set rtp+=~/.fzf
-endif
 
 let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
@@ -202,6 +214,8 @@ command! -bang -nargs=* Rg
 " ══════════════════════════════════════════════════════════════════════════════
 " CoC / LSP
 " ══════════════════════════════════════════════════════════════════════════════
+
+if s:has_coc
 
 let g:coc_global_extensions = [
       \ 'coc-clangd', 'coc-pyright', 'coc-rust-analyzer', 'coc-go',
@@ -251,6 +265,8 @@ nnoremap <leader>s :CocList symbols<CR>
 " Format buffer  (like Ctrl+Alt+L)
 nnoremap <leader>f :call CocAction('format')<CR>
 
+endif
+
 
 " ══════════════════════════════════════════════════════════════════════════════
 " C / C++ / Embedded
@@ -261,7 +277,7 @@ let g:C_UseTool_doxygen = 'yes'
 
 " Skip auto-format in kernel/AOSP trees — they have per-module style configs
 function! ClangFormatIfNotKernel() abort
-  if expand('%:p') =~# '\v/(linux|kernel|aosp)/'
+  if expand('%:p') =~# '\v/(linux|kernel|aosp)/' || !executable('clang-format') || !exists(':ClangFormat')
     return
   endif
   ClangFormat
@@ -279,6 +295,7 @@ let g:go_doc_keywordprg_enabled = 0
 let g:go_gopls_enabled          = 0   " gopls läuft über coc, nicht doppelt
 let g:go_fmt_autosave           = 0   " Format on save macht coc (coc-settings.json)
 let g:go_get_update             = 0   " keine Tool-Updates durch vim-go
+let g:go_imports_autosave      = 0   " goimports on save: coc/gopls handles imports
 
 autocmd FileType go nmap <buffer> <leader>gt :GoTest<CR>
 autocmd FileType go nmap <buffer> <leader>gr :GoRun<CR>

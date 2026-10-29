@@ -53,6 +53,7 @@ function is_macos()   { [[ $OSTYPE == darwin* ]] }
 function is_linux()   { [[ $OSTYPE == linux* ]] }
 function has_python() { (( $+commands[python3] )) }
 function has_tmux()   { (( $+commands[tmux] )) }
+function has_ssh_agent_linux() { is_linux && (( $+commands[ssh-agent] )) }
 
 ################ antidote ################
 ANTIDOTE_HOME=${ZDOTDIR:-$HOME}/.antidote
@@ -86,8 +87,13 @@ if _has fzf; then
   # fzf >= 0.48 bringt die Integration selbst mit; ältere Distro-Pakete (Debian 12) nicht
   if fzf --zsh >/dev/null 2>&1; then
     source <(fzf --zsh)
-  elif [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]; then
-    source /usr/share/doc/fzf/examples/key-bindings.zsh
+  else
+    # fzf < 0.48: distro key bindings (Debian/Ubuntu, Fedora, Arch/Alpine)
+    for f in /usr/share/doc/fzf/examples/key-bindings.zsh \
+             /usr/share/fzf/shell/key-bindings.zsh \
+             /usr/share/fzf/key-bindings.zsh; do
+      [ -f "$f" ] && { source "$f"; break; }
+    done
   fi
   if _has rg; then
     export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git"'

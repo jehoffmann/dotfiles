@@ -68,8 +68,13 @@ export VISUAL=$EDITOR
 if command -v fzf >/dev/null 2>&1; then
   if fzf --bash >/dev/null 2>&1; then
     source <(fzf --bash)
-  elif [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
-    source /usr/share/doc/fzf/examples/key-bindings.bash
+  else
+    # fzf < 0.48: distro key bindings (Debian/Ubuntu, Fedora, Arch/Alpine)
+    for f in /usr/share/doc/fzf/examples/key-bindings.bash \
+             /usr/share/fzf/shell/key-bindings.bash \
+             /usr/share/fzf/key-bindings.bash; do
+      [ -f "$f" ] && { source "$f"; break; }
+    done
   fi
   if command -v rg >/dev/null 2>&1; then
     export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git"'

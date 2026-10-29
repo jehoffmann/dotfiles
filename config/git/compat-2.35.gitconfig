@@ -1,0 +1,4 @@
+# git >= 2.35 – linked by install.sh only where git is new enough
+
+[merge]
+    conflictstyle = zdiff3

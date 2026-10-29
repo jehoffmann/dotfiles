@@ -1,0 +1,13 @@
+# git >= 2.34 – linked by install.sh only where git is new enough
+# (git 2.25 on Ubuntu 20.04 rejects these values and aborts)
+
+[help]
+    autocorrect = prompt
+
+# SSH commit signing. Needs an allowed_signers file and user.signingkey set
+# to your public key (see ~/.gitconfig_user).
+[gpg]
+    format = ssh
+
+[gpg "ssh"]
+    allowedSignersFile = ~/.ssh/allowed_signers

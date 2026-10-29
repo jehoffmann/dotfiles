@@ -27,7 +27,7 @@ ohmyzsh/ohmyzsh path:plugins/brew              conditional:is_macos
 ohmyzsh/ohmyzsh path:plugins/xcode             conditional:is_macos
 
 # Linux
-ohmyzsh/ohmyzsh path:plugins/ssh-agent         conditional:is_linux
+ohmyzsh/ohmyzsh path:plugins/ssh-agent         conditional:has_ssh_agent_linux
 
 # Diese zwei als letztes (syntax-highlighting zwingend ganz am Ende)
 zsh-users/zsh-autosuggestions
