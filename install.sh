@@ -5,6 +5,7 @@
 #   ./install.sh --profile server    headless: shell/CLI tools only, no language runtimes
 #   ./install.sh --profile desktop   adds runtimes (mise), Nerd Font, clipboard tools
 #   ./install.sh --links             only (re)create symlinks
+#   ./install.sh --cleanup [--yes]   list leftovers of older setups; --yes deletes them
 #
 # The chosen profile is remembered in ~/.config/dotfiles/profile.
 
@@ -35,12 +36,16 @@ XDG_DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
 PROFILE_FILE="$XDG_CONFIG/dotfiles/profile"
 
 LINKS_ONLY=false
+CLEANUP=false
+ASSUME_YES=false
 PROFILE=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --links)   LINKS_ONLY=true ;;
+        --cleanup) CLEANUP=true ;;
+        -y|--yes)  ASSUME_YES=true ;;
         --profile) PROFILE="${2:?--profile needs desktop|server}"; shift ;;
-        -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+        -h|--help) sed -n '2,11p' "$0"; exit 0 ;;
         *) echo "unknown option: $1" >&2; exit 1 ;;
     esac
     shift
@@ -113,6 +118,91 @@ detect_profile() {
 case "$PROFILE" in desktop|server) ;; *) echo "invalid profile: $PROFILE" >&2; exit 1 ;; esac
 mkdir -p "$(dirname "$PROFILE_FILE")" && echo "$PROFILE" >"$PROFILE_FILE"
 echo "== dotfiles: $DISTRO, profile $PROFILE"
+
+########## Cleanup ##########
+# Leftovers of older setups. Dry run by default; --yes applies. Only fixed,
+# known paths below $HOME are touched, never anything the user created.
+cleanup() {
+    local mode=dry-run p t
+    $ASSUME_YES && mode=apply
+    echo "== cleanup ($mode)"
+
+    remove() {   # remove <path> <reason>
+        case "$1" in "$HOME"/?*) ;; *) warn "refusing to remove $1"; return 0 ;; esac
+        if $ASSUME_YES; then run rm -rf "$1"; else echo "  would remove $1  ($2)"; fi
+    }
+    move() {     # move <from> <to> <reason>
+        if $ASSUME_YES; then mkdir -p "$(dirname "$2")" && run mv "$1" "$2"
+        else echo "  would move   $1 -> $2  ($3)"; fi
+    }
+    # list the non-empty directory <dir>/bin, "" if empty or missing
+    bin_contents() { if [ -d "$1/bin" ]; then ls -A "$1/bin" | tr "\n" " "; fi; }
+
+    [ -d "$HOME/.antigen" ] && remove "$HOME/.antigen" "Antigen, replaced by antidote"
+    [ -d "$HOME/.lldb" ]    && remove "$HOME/.lldb" "old lldbinit download, now config/lldb"
+
+    # old tmux plugin dir; keep saved resurrect sessions (resurrect uses XDG without ~/.tmux)
+    if [ -d "$HOME/.tmux" ]; then
+        t="$XDG_DATA/tmux/resurrect"
+        if [ -d "$HOME/.tmux/resurrect" ] && [ ! -e "$t" ]; then
+            move "$HOME/.tmux/resurrect" "$t" "saved tmux sessions"
+        elif [ -d "$HOME/.tmux/resurrect" ]; then
+            warn "keeping ~/.tmux: both ~/.tmux/resurrect and $t exist – merge by hand"
+            t=""
+        fi
+        [ -n "$t" ] && remove "$HOME/.tmux" "old TPM plugins, now ~/.config/tmux/plugins"
+    fi
+
+    # pre-XDG Rust; keep it if `cargo install` put own tools there
+    if [ -d "$HOME/.cargo" ] && [ "${CARGO_HOME:-$XDG_DATA/cargo}" != "$HOME/.cargo" ]; then
+        local extra=""
+        for p in $(bin_contents "$HOME/.cargo"); do
+            case "$p" in
+                cargo|cargo-clippy|cargo-fmt|cargo-miri|clippy-driver|rls|rust-analyzer|rust-gdb|rust-gdbgui|rust-lldb|rustc|rustdoc|rustfmt|rustup) ;;
+                *) extra="$extra $p" ;;
+            esac
+        done
+        if [ -n "$extra" ]; then
+            warn "keeping ~/.cargo – it contains tools from 'cargo install':$extra"
+        else
+            remove "$HOME/.cargo" "pre-XDG Rust, now $XDG_DATA/cargo"
+        fi
+    fi
+    if [ -d "$HOME/.rustup" ] && [ "${RUSTUP_HOME:-$XDG_DATA/rustup}" != "$HOME/.rustup" ]; then
+        remove "$HOME/.rustup" "pre-XDG Rust, now $XDG_DATA/rustup"
+    fi
+
+    # pre-XDG GOPATH; keep it if `go install` put tools there
+    if [ -d "$HOME/go" ] && [ "${GOPATH:-$XDG_DATA/go}" != "$HOME/go" ]; then
+        p=$(bin_contents "$HOME/go")
+        if [ -n "$p" ]; then
+            warn "keeping ~/go – bin/ contains: $p(delete by hand if these came from vim-go)"
+        else
+            remove "$HOME/go" "pre-XDG GOPATH, now $XDG_DATA/go"
+        fi
+    fi
+
+    # backups made by link()
+    for p in "$HOME"/.*.orig-[0-9]* "$HOME"/*.orig-[0-9]* "$XDG_CONFIG"/*/*.orig-[0-9]* "$XDG_CONFIG"/*/*/*.orig-[0-9]*; do
+        [ -e "$p" ] || [ -L "$p" ] || continue
+        remove "$p" "backup made by install.sh"
+    done
+
+    # dangling symlinks that point into this repo (files removed from the repo)
+    for p in "$HOME"/.* "$HOME"/* "$XDG_CONFIG"/* "$XDG_CONFIG"/*/* "$XDG_CONFIG"/*/*/*; do
+        [ -L "$p" ] && [ ! -e "$p" ] || continue
+        case "$(readlink "$p")" in "$DOTFILES"/*) remove "$p" "dangling link into the repo" ;; esac
+    done
+
+    $ASSUME_YES || echo "== dry run only – rerun with --cleanup --yes to apply"
+}
+
+if $CLEANUP; then
+    # shellcheck disable=SC1091
+    [ -r "$DOTFILES/config/shell/env.sh" ] && . "$DOTFILES/config/shell/env.sh"
+    cleanup
+    exit 0
+fi
 
 ########## Symlinks ##########
 [ "$DOTFILES" = "$HOME" ] && { echo "repo must not be \$HOME" >&2; exit 1; }

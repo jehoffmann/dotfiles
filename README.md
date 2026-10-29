@@ -56,6 +56,7 @@ are moved aside as `<name>.orig-<timestamp>` before a symlink replaces them.
 ./install.sh --profile server    headless: shell/CLI tools only, no language runtimes
 ./install.sh --profile desktop   adds runtimes (mise), Nerd Font, clipboard tools
 ./install.sh --links             only (re)create the symlinks
+./install.sh --cleanup [--yes]   list leftovers of older setups; --yes deletes them
 ```
 
 ### Profiles
@@ -256,16 +257,42 @@ terminal font, not the shell:
 
 ## Upgrading an existing machine
 
+Older clones still track `master`, which no longer exists – switch once to `main`:
+
 ```sh
-cd ~/.dotfiles && git pull
-./install.sh            # or --links if only configuration changed
+cd ~/.dotfiles
+git stash -u                       # only if there are local changes
+git fetch origin --prune
+git checkout -B main origin/main
+git branch -D master
+./install.sh                       # or --links if only configuration changed
 exec zsh -l
 ```
 
-Leftovers from the old setup that can be deleted once everything works:
-`~/.antigen`, `~/.tmux/` (old TPM plugins; keep `~/.tmux/resurrect` if you need
-saved sessions), `~/.lldb/`, `~/.gdbinit.orig-*`, `~/.zshrc.orig-*`,
-`~/.zprofile.orig-*`, an empty `~/.rustup`, `~/go`.
+Afterwards a plain `git pull && ./install.sh` is enough.
+
+### Cleaning up leftovers
+
+The installer never deletes anything on its own: files in the way of a symlink
+are moved aside as `<name>.orig-<timestamp>`. Leftovers of older setups are
+removed with a separate, explicit step:
+
+```sh
+./install.sh --cleanup          # dry run: shows what would be removed
+./install.sh --cleanup --yes    # removes it
+```
+
+| Path | Rule |
+|---|---|
+| `~/.antigen` | removed (replaced by antidote) |
+| `~/.lldb` | removed (old lldbinit download) |
+| `~/.tmux` | `resurrect/` is moved to `~/.local/share/tmux/resurrect` first (where tmux-resurrect looks once `~/.tmux` is gone), then removed; kept if both locations exist |
+| `~/.cargo`, `~/.rustup` | removed when Rust lives under XDG – `~/.cargo` is kept if it holds tools from `cargo install` |
+| `~/go` | removed when `GOPATH` is under XDG – kept if `bin/` is not empty (check and delete by hand) |
+| `*.orig-<timestamp>` in `~` and `~/.config` | removed (backups made by the installer) |
+| dangling symlinks in `~` / `~/.config` | removed only if they point into this repository |
+
+Only these fixed paths below `$HOME` are ever touched.
 
 ## Troubleshooting
 
@@ -306,5 +333,7 @@ Antigen-based setup → current tooling, in this order:
    desktop/server profiles; gap filling via mise; version gates for tmux, git
    and Vim; Nerd Font and `environment.d` on Linux desktops.
 10. **Docs** – all comments in English, this README.
+11. **Cleanup** – `install.sh --cleanup` removes leftovers of the old setup
+    (dry run by default).
 
 See `git log` for the individual commits.
