@@ -59,6 +59,24 @@ exec zsh -l
 HTTPS clone, so no SSH key is needed on the server. Needs `sudo` (or root) for
 the package manager.
 
+### Managed server without root (salt, Ansible, LDAP, …)
+
+```sh
+git clone https://github.com/jehoffmann/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install.sh --profile server --no-root
+exec zsh -l 2>/dev/null || exec bash -l
+```
+
+`--no-root` never calls sudo/doas: no system packages, no `chsh`. CLI tools the
+system lacks (ripgrep, fd, bat, fzf, eza, zoxide, starship, delta, lazygit, jq)
+are installed by mise into `$HOME` – mise itself goes to `~/.local/bin`. This
+needs outbound HTTPS to mise.run and GitHub. If the login shell cannot be
+changed, a bash *login* shell hands over to zsh via `~/.bashrc_local`
+(`DOTFILES_NO_ZSH=1` keeps bash). Without zsh on the system, bash gets the same
+aliases and prompt. The mode is remembered; `./install.sh --root` undoes it.
+It is switched on automatically when neither root, sudo nor doas is available.
+
 ### New machine – Alpine guest
 
 ```sh
@@ -110,6 +128,7 @@ package lists changed. Optional: `vim +PlugUpdate +qa`, `mise upgrade`,
 ./install.sh --profile server    headless: shell/CLI tools only, no language runtimes
 ./install.sh --profile desktop   adds runtimes (mise), Nerd Font, clipboard tools
 ./install.sh --links             only (re)create the symlinks
+./install.sh --no-root           never use sudo/doas (managed servers); --root undoes it
 ./install.sh --cleanup [--yes]   list leftovers of older setups; --yes deletes them
 ```
 
@@ -178,6 +197,9 @@ Runtime data also follows XDG: `RUSTUP_HOME`, `CARGO_HOME` and `GOPATH` live in
   so GUI apps and IDEs launched from the Dock see the runtimes. On Linux
   desktops `environment.d` does the same for the graphical session.
 - **zoxide** replaces autojump: `z proj`, `zi` for an fzf picker.
+- Every tool-specific alias and integration (bat, eza, fd, rg, fzf, zoxide,
+  starship, delta, lazygit, …) is only set when the tool exists, so a server
+  with just zsh, git and vim works without errors.
 - **fzf-tab**: Tab completion opens an fzf menu (fuzzy filter, preview) for
   files, git subcommands and branches, `kill`, `ssh` hosts, …
 - **zsh-you-should-use** points out existing aliases when you type the long

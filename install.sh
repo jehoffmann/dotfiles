@@ -5,9 +5,12 @@
 #   ./install.sh --profile server    headless: shell/CLI tools only, no language runtimes
 #   ./install.sh --profile desktop   adds runtimes (mise), Nerd Font, clipboard tools
 #   ./install.sh --links             only (re)create symlinks
+#   ./install.sh --no-root           never use sudo/doas: no system packages, no chsh;
+#                                    missing CLI tools come from mise in $HOME
+#   ./install.sh --root              allow sudo/doas again (undoes --no-root)
 #   ./install.sh --cleanup [--yes]   list leftovers of older setups; --yes deletes them
 #
-# The chosen profile is remembered in ~/.config/dotfiles/profile.
+# Profile and --no-root are remembered in ~/.config/dotfiles/.
 
 # ── POSIX preamble ──────────────────────────────────────────────────────────
 # Re-execute in a regular bash: Alpine/BusyBox ships without bash, and on macOS
@@ -34,18 +37,22 @@ platform=$(uname | tr '[:upper:]' '[:lower:]')
 XDG_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
 PROFILE_FILE="$XDG_CONFIG/dotfiles/profile"
+NO_ROOT_FILE="$XDG_CONFIG/dotfiles/no-root"
 
 LINKS_ONLY=false
 CLEANUP=false
 ASSUME_YES=false
 PROFILE=""
+NO_ROOT=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --links)   LINKS_ONLY=true ;;
         --cleanup) CLEANUP=true ;;
         -y|--yes)  ASSUME_YES=true ;;
         --profile) PROFILE="${2:?--profile needs desktop|server}"; shift ;;
-        -h|--help) sed -n '2,11p' "$0"; exit 0 ;;
+        --no-root) NO_ROOT=true ;;
+        --root)    NO_ROOT=false ;;
+        -h|--help) sed -n '2,14p' "$0"; exit 0 ;;
         *) echo "unknown option: $1" >&2; exit 1 ;;
     esac
     shift
@@ -71,6 +78,7 @@ tool_version() { "$@" 2>/dev/null | grep -Eo '[0-9]+(\.[0-9]+)+' | head -n1; }
 
 # Run as root: directly, via sudo or via doas
 as_root() {
+    if $NO_ROOT; then warn "skipped (--no-root): $*"; return 1; fi
     if [ "$(id -u)" -eq 0 ]; then "$@"
     elif has sudo; then sudo "$@"
     elif has doas; then doas "$@"
@@ -117,6 +125,20 @@ detect_profile() {
 [ -n "$PROFILE" ] || PROFILE=$(cat "$PROFILE_FILE" 2>/dev/null || detect_profile)
 case "$PROFILE" in desktop|server) ;; *) echo "invalid profile: $PROFILE" >&2; exit 1 ;; esac
 mkdir -p "$(dirname "$PROFILE_FILE")" && echo "$PROFILE" >"$PROFILE_FILE"
+
+# no-root mode: explicit flag, remembered choice, or nothing to elevate with
+case "$NO_ROOT" in
+    true)  touch "$NO_ROOT_FILE" ;;
+    false) rm -f "$NO_ROOT_FILE" ;;
+esac
+if [ -e "$NO_ROOT_FILE" ]; then
+    NO_ROOT=true
+elif [ "$NO_ROOT" != false ] && [ "$(id -u)" -ne 0 ] && ! has sudo && ! has doas; then
+    NO_ROOT=true
+else
+    NO_ROOT=false
+fi
+if $NO_ROOT; then echo "== no-root mode: system packages and chsh are skipped"; fi
 echo "== dotfiles: $DISTRO, profile $PROFILE"
 
 ########## Cleanup ##########
@@ -352,7 +374,7 @@ case "$DISTRO" in
         ;;
     debian)
         export DEBIAN_FRONTEND=noninteractive
-        run as_root apt-get update -qq
+        $NO_ROOT || run as_root apt-get update -qq
         PKG_INSTALL=(as_root apt-get install -y -qq --no-install-recommends)
         BASE=(zsh bash git curl ca-certificates tmux vim)
         OPTIONAL=(less openssh-client ncurses-term ripgrep bat fd-find fzf jq btop zoxide eza git-delta procps file)
@@ -365,14 +387,14 @@ case "$DISTRO" in
         DESKTOP=(gdb xclip wl-clipboard fontconfig xz ctags)
         ;;
     arch)
-        run as_root pacman -Sy --noconfirm
+        $NO_ROOT || run as_root pacman -Sy --noconfirm
         PKG_INSTALL=(as_root pacman -S --needed --noconfirm)
         BASE=(zsh bash git curl tmux vim)
         OPTIONAL=(less openssh ncurses ripgrep bat fd fzf jq btop zoxide eza git-delta lazygit starship mise github-cli procps-ng file)
         DESKTOP=(gdb xclip wl-clipboard fontconfig ctags ttf-jetbrains-mono-nerd)
         ;;
     alpine)
-        run as_root apk update -q
+        $NO_ROOT || run as_root apk update -q
         PKG_INSTALL=(as_root apk add -q --no-cache)
         BASE=(zsh bash git curl tmux vim)
         OPTIONAL=(less openssh-client ncurses ncurses-terminfo shadow coreutils procps ripgrep bat fd fzf jq btop zoxide eza delta lazygit starship mise file)
@@ -381,7 +403,9 @@ case "$DISTRO" in
     *) warn "unknown distro – skipping packages" ;;
 esac
 
-if [ "$DISTRO" != darwin ] && [ ${#BASE[@]} -gt 0 ]; then
+if $NO_ROOT && [ "$DISTRO" != darwin ]; then
+    for t in zsh git curl tmux vim; do has "$t" || warn "$t is not installed and cannot be without root"; done
+elif [ "$DISTRO" != darwin ] && [ ${#BASE[@]} -gt 0 ]; then
     echo "== base packages"
     run "${PKG_INSTALL[@]}" "${BASE[@]}" >/dev/null
     echo "== optional packages"
@@ -418,6 +442,7 @@ if [ "$DISTRO" != darwin ]; then
     has starship                || missing+=(starship)
     has delta                   || missing+=(delta)
     has lazygit                 || missing+=(lazygit)
+    has jq                      || missing+=(jq)
     if ! has fzf || ! version_ge "$(tool_version fzf --version)" 0.48; then
         missing+=(fzf)          # shell integration needs fzf >= 0.48
     fi
@@ -452,10 +477,24 @@ fi
 [ -d "$HOME/.antidote" ] || run git clone --depth=1 https://github.com/mattmc3/antidote.git "$HOME/.antidote"
 
 if has zsh && [ "$(basename "${SHELL:-}")" != zsh ]; then
-    echo "== set login shell to zsh"
     zsh_path=$(command -v zsh)
-    grep -qx "$zsh_path" /etc/shells 2>/dev/null || echo "$zsh_path" | as_root tee -a /etc/shells >/dev/null
-    as_root chsh -s "$zsh_path" "$(id -un)" || warn "chsh failed – run: chsh -s $zsh_path"
+    if ! $NO_ROOT; then
+        echo "== set login shell to zsh"
+        grep -qx "$zsh_path" /etc/shells 2>/dev/null || echo "$zsh_path" | as_root tee -a /etc/shells >/dev/null
+        as_root chsh -s "$zsh_path" "$(id -un)" || warn "chsh failed – run: chsh -s $zsh_path"
+    elif ! grep -qs "dotfiles: start zsh" "$HOME/.bashrc_local"; then
+        # login shell is managed elsewhere (LDAP, salt, …): hop from bash to zsh on login
+        echo "== login shell stays $(basename "${SHELL:-bash}"); bash login shells exec zsh (~/.bashrc_local)"
+        cat >>"$HOME/.bashrc_local" <<'EOF'
+# dotfiles: start zsh – the login shell cannot be changed here. Only bash *login*
+# shells hop, so running `bash` by hand still gives bash. DOTFILES_NO_ZSH=1 stays in bash.
+if shopt -q login_shell && [ -t 1 ] && [ -z "${DOTFILES_NO_ZSH:-}" ] && command -v zsh >/dev/null 2>&1; then
+  exec zsh -l
+fi
+EOF
+    fi
+elif ! has zsh; then
+    warn "zsh not available – bash with the same aliases and prompt is used instead"
 fi
 
 ########## tmux ##########
