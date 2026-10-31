@@ -77,6 +77,13 @@ changed, a bash *login* shell hands over to zsh via `~/.bashrc_local`
 aliases and prompt. The mode is remembered; `./install.sh --root` undoes it.
 It is switched on automatically when neither root, sudo nor doas is available.
 
+To keep mise out entirely – or install it yourself – add `--no-mise`: the
+installer then never downloads mise and never runs `mise install`. The mise
+config is still linked (and the list of missing tools still written to
+`~/.config/mise/conf.d/90-local.toml`), so a later, self-installed mise only
+needs `mise install`. Without mise, the shell simply skips the tools that are
+missing.
+
 ### New machine – Alpine guest
 
 ```sh
@@ -129,6 +136,7 @@ package lists changed. Optional: `vim +PlugUpdate +qa`, `mise upgrade`,
 ./install.sh --profile desktop   adds runtimes (mise), Nerd Font, clipboard tools
 ./install.sh --links             only (re)create the symlinks
 ./install.sh --no-root           never use sudo/doas (managed servers); --root undoes it
+./install.sh --no-mise           never download mise or run `mise install`; --mise undoes it
 ./install.sh --cleanup [--yes]   list leftovers of older setups; --yes deletes them
 ```
 
