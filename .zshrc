@@ -57,6 +57,8 @@ function has_ssh_agent_linux() { is_linux && (( $+commands[ssh-agent] )) }
 
 ################ antidote ################
 ANTIDOTE_HOME=${ZDOTDIR:-$HOME}/.antidote
+zstyle ':omz:update' mode disabled
+
 [ -f $ANTIDOTE_HOME/antidote.zsh ] || \
   git clone --depth=1 https://github.com/mattmc3/antidote.git $ANTIDOTE_HOME
 
