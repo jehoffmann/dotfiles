@@ -1,9 +1,10 @@
-# Homebrew on PATH (Apple Silicon: /opt/homebrew, Intel: /usr/local)
-# Installing brew itself is done by install.sh, not by the shell.
-if [[ -x /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -x /usr/local/bin/brew ]]; then
-  eval "$(/usr/local/bin/brew shellenv)"
+# Fallback: ensure Homebrew is on PATH if a non-login interactive shell was started
+if [[ -z "$HOMEBREW_PREFIX" ]] || (( ! ${path[(Ie)$HOMEBREW_PREFIX/bin]} )); then
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 fi
 
 #ADDED BY 010 EDITOR
